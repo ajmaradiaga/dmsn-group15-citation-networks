@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>exploring-dataset</title>
+<title>exploring-nodes-with-modularity</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13121,15 +13121,8 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="kn">from</span> <span class="nn">bokeh.io</span> <span class="k">import</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">output_notebook</span>
-<span class="kn">from</span> <span class="nn">bokeh.models.widgets</span> <span class="k">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">DateFormatter</span><span class="p">,</span> <span class="n">TableColumn</span>
-<span class="kn">from</span> <span class="nn">bokeh.models</span> <span class="k">import</span> <span class="n">ColumnDataSource</span>
-<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="k">import</span> <span class="n">show</span>
-<span class="kn">from</span> <span class="nn">bokeh.plotting</span> <span class="k">import</span> <span class="n">figure</span>
-<span class="kn">from</span> <span class="nn">fastparquet</span> <span class="k">import</span> <span class="n">write</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">snappy</span>
 
 <span class="kn">from</span> <span class="nn">helper</span> <span class="k">import</span> <span class="n">display_df_with_bokeh</span>
 </pre></div>
@@ -13166,10 +13159,10 @@ div#notebook {
 
 
 
-<div id="fe77e86b-b6bd-435b-96ac-2a1abf9266d8"></div>
+<div id="0417e267-c681-4c61-8732-0169a2fcec38"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#fe77e86b-b6bd-435b-96ac-2a1abf9266d8');
+var element = $('#0417e267-c681-4c61-8732-0169a2fcec38');
 
 (function(root) {
   function now() {
@@ -13452,7 +13445,122 @@ var element = $('#fe77e86b-b6bd-435b-96ac-2a1abf9266d8');
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>head -n <span class="m">10</span> datasets/cit-HepTh.txt
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">DATASETS_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;datasets&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Opening original network with modularity</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;gephi/nodes_with_modularity_and_degree.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">gephi_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate records per group</span>
+<span class="n">modularity_df</span> <span class="o">=</span> <span class="n">gephi_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;modularity_class&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Only taking in consideration where groups have more than 10 nodes</span>
+<span class="n">modularity_mt_nodes_df</span> <span class="o">=</span> <span class="n">modularity_df</span><span class="p">[</span><span class="n">modularity_df</span><span class="o">.</span><span class="n">Id</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">]</span>
+
+<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">modularity_mt_nodes_df</span><span class="p">,</span> <span class="n">include_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+
+
+
+
+
+  <div class="bk-root" id="968ee080-5f21-438b-99f6-735ee36e5f84" data-root-id="1010"></div>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+
+<div id="a5c8a536-cedc-4a26-a2fa-fafb10c2ac71"></div>
+<div class="output_subarea output_javascript ">
+<script type="text/javascript">
+var element = $('#a5c8a536-cedc-4a26-a2fa-fafb10c2ac71');
+(function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"19be1b3a-caca-436a-b393-331c7ac4a7c9":{"roots":{"references":[{"attributes":{"columns":[{"id":"1002","type":"TableColumn"},{"id":"1003","type":"TableColumn"},{"id":"1004","type":"TableColumn"},{"id":"1005","type":"TableColumn"},{"id":"1006","type":"TableColumn"},{"id":"1007","type":"TableColumn"},{"id":"1008","type":"TableColumn"}],"source":{"id":"1009","type":"ColumnDataSource"},"view":{"id":"1011","type":"CDSView"}},"id":"1010","type":"DataTable"},{"attributes":{"editor":{"id":"1013","type":"StringEditor"},"field":"modularity_class","formatter":{"id":"1012","type":"StringFormatter"},"title":"modularity_class"},"id":"1002","type":"TableColumn"},{"attributes":{},"id":"1019","type":"StringEditor"},{"attributes":{},"id":"1020","type":"StringFormatter"},{"attributes":{"editor":{"id":"1015","type":"StringEditor"},"field":"Id","formatter":{"id":"1014","type":"StringFormatter"},"title":"Id"},"id":"1003","type":"TableColumn"},{"attributes":{},"id":"1021","type":"StringEditor"},{"attributes":{"editor":{"id":"1017","type":"StringEditor"},"field":"Label","formatter":{"id":"1016","type":"StringFormatter"},"title":"Label"},"id":"1004","type":"TableColumn"},{"attributes":{},"id":"1022","type":"StringFormatter"},{"attributes":{"editor":{"id":"1019","type":"StringEditor"},"field":"timeset","formatter":{"id":"1018","type":"StringFormatter"},"title":"timeset"},"id":"1005","type":"TableColumn"},{"attributes":{},"id":"1023","type":"StringEditor"},{"attributes":{"editor":{"id":"1021","type":"StringEditor"},"field":"indegree","formatter":{"id":"1020","type":"StringFormatter"},"title":"indegree"},"id":"1006","type":"TableColumn"},{"attributes":{},"id":"1024","type":"StringFormatter"},{"attributes":{"editor":{"id":"1023","type":"StringEditor"},"field":"outdegree","formatter":{"id":"1022","type":"StringFormatter"},"title":"outdegree"},"id":"1007","type":"TableColumn"},{"attributes":{},"id":"1025","type":"StringEditor"},{"attributes":{"editor":{"id":"1025","type":"StringEditor"},"field":"Degree","formatter":{"id":"1024","type":"StringFormatter"},"title":"Degree"},"id":"1008","type":"TableColumn"},{"attributes":{},"id":"1026","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"Degree":[3378,2370,2337,1899,1668,1562,1550,1538,1508,1492,1392,1281,1190,994,953,910,658,288,219,173],"Id":[3378,2370,2337,1899,1668,1562,1550,1538,1508,1492,1392,1281,1190,994,953,910,658,288,219,173],"Label":[3378,2370,2337,1899,1668,1562,1550,1538,1508,1492,1392,1281,1190,994,953,910,658,288,219,173],"indegree":[3378,2370,2337,1899,1668,1562,1550,1538,1508,1492,1392,1281,1190,994,953,910,658,288,219,173],"modularity_class":[2,34,37,54,62,11,3,16,7,25,0,6,8,1,19,4,65,31,9,14],"outdegree":[3378,2370,2337,1899,1668,1562,1550,1538,1508,1492,1392,1281,1190,994,953,910,658,288,219,173],"timeset":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"selected":{"id":"1027","type":"Selection"},"selection_policy":{"id":"1026","type":"UnionRenderers"}},"id":"1009","type":"ColumnDataSource"},{"attributes":{},"id":"1013","type":"StringEditor"},{"attributes":{},"id":"1012","type":"StringFormatter"},{"attributes":{"source":{"id":"1009","type":"ColumnDataSource"}},"id":"1011","type":"CDSView"},{"attributes":{},"id":"1027","type":"Selection"},{"attributes":{},"id":"1014","type":"StringFormatter"},{"attributes":{},"id":"1015","type":"StringEditor"},{"attributes":{},"id":"1016","type":"StringFormatter"},{"attributes":{},"id":"1017","type":"StringEditor"},{"attributes":{},"id":"1018","type":"StringFormatter"}],"root_ids":["1010"]},"title":"Bokeh Application","version":"1.0.4"}};
+  var render_items = [{"docid":"19be1b3a-caca-436a-b393-331c7ac4a7c9","roots":{"1010":"968ee080-5f21-438b-99f6-735ee36e5f84"}}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total nodes that form part of communities with more than 10 members: &quot;</span><span class="p">,</span> <span class="n">modularity_mt_nodes_df</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">&#39;Id&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13469,161 +13577,11 @@ var element = $('#fe77e86b-b6bd-435b-96ac-2a1abf9266d8');
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>
-
-
-
-
-
-
-
-
-
+<pre>Total nodes that form part of communities with more than 10 members:  27391
 </pre>
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Initialise-variables">Initialise variables<a class="anchor-link" href="#Initialise-variables">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">DATASETS_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;datasets&quot;</span>
-<span class="n">ABSTRACTS_FOLDER</span> <span class="o">=</span> <span class="s2">&quot;abstracts&quot;</span>
-
-<span class="n">ABSTRACTS_FOLDER_PATH</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/</span><span class="si">{ABSTRACTS_FOLDER}</span><span class="s2">/&quot;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Processing-functions">Processing functions<a class="anchor-link" href="#Processing-functions">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">extract_text_from_abstract</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Date:&#39;</span><span class="p">,</span> <span class="s2">&quot;From:&quot;</span><span class="p">,</span> <span class="s2">&quot;Title:&quot;</span><span class="p">,</span> <span class="s2">&quot;Authors:&quot;</span><span class="p">,</span> <span class="s2">&quot;Comments:&quot;</span><span class="p">,</span> <span class="s2">&quot;Subj-class:&quot;</span><span class="p">,</span> <span class="s2">&quot;Journal-ref:&quot;</span><span class="p">]</span>
-    
-    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;[</span><span class="se">\n\r</span><span class="s2">].*</span><span class="si">{field}</span><span class="s2">\s*([^</span><span class="se">\n\r</span><span class="s2">]*)&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        
-        <span class="n">info</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
-        
-    <span class="k">return</span> <span class="n">info</span>
-
-<span class="n">ignore_emails</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">]</span>
-<span class="n">ignore_tlds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-<span class="n">ignore_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">domain_and_tld_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
-    <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">email</span><span class="p">:</span>
-                        
-        <span class="c1"># Remove cases when email finishes with a period</span>
-        <span class="k">if</span> <span class="n">email</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-            <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="n">domain</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="s1">&#39;.ac.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.co.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.edu.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.gov.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.com.&#39;</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
-
-        <span class="n">tld</span>  <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">tld</span> <span class="ow">in</span> <span class="n">ignore_tlds</span><span class="p">:</span>
-            <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">ignore_domains</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
-        
-    
-    <span class="k">return</span> <span class="n">domain</span><span class="p">,</span> <span class="n">tld</span>
-
-<span class="c1"># Code below from https://stackoverflow.com/a/40449726/9527459</span>
-<span class="k">def</span> <span class="nf">explode</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">lst_cols</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="c1"># make sure `lst_cols` is a list</span>
-    <span class="k">if</span> <span class="n">lst_cols</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lst_cols</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">lst_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">lst_cols</span><span class="p">]</span>
-    <span class="c1"># all columns except `lst_cols`</span>
-    <span class="n">idx_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">lst_cols</span><span class="p">)</span>
-
-    <span class="c1"># calculate lengths of lists</span>
-    <span class="n">lens</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">lst_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="p">(</span><span class="n">lens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-        <span class="c1"># ALL lists in cells aren&#39;t empty</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-            <span class="n">col</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">lens</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">idx_cols</span>
-        <span class="p">})</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">lst_cols</span><span class="p">})</span> \
-          <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># at least one list in cells is empty</span>
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-            <span class="n">col</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">lens</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">idx_cols</span>
-        <span class="p">})</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">col</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">lst_cols</span><span class="p">})</span> \
-          <span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">lens</span><span class="o">==</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx_cols</span><span class="p">])</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">fill_value</span><span class="p">)</span> \
-          <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Process-paper-citations">Process paper citations<a class="anchor-link" href="#Process-paper-citations">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/cit-HepTh.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">skiprows</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-    
-<span class="c1"># Rename columns</span>
-<span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">]</span>
-
-<span class="n">tlds_csv</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/tlds.csv&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">squeeze</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-<span class="n">tlds_info</span> <span class="o">=</span> <span class="n">tlds_csv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-    </div>
 </div>
 </div>
 
@@ -13633,7 +13591,7 @@ var element = $('#fe77e86b-b6bd-435b-96ac-2a1abf9266d8');
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="mi">150</span><span class="p">:</span><span class="mi">250</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total nodes that form part of communities with less than 10 members: &quot;</span><span class="p">,</span> <span class="n">modularity_df</span><span class="p">[</span><span class="n">modularity_df</span><span class="o">.</span><span class="n">Id</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">&#39;Id&#39;</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13649,60 +13607,10 @@ var element = $('#fe77e86b-b6bd-435b-96ac-2a1abf9266d8');
     <div class="prompt"></div>
 
 
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="e8dc13b6-eb87-4c2f-837d-64c43519cc35" data-root-id="1005"></div>
-
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total nodes that form part of communities with less than 10 members:  379
+</pre>
 </div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="bcb09fb7-ab68-4b2c-a6c4-7f7659436bdd"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#bcb09fb7-ab68-4b2c-a6c4-7f7659436bdd');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"df58a891-ac8c-4de6-85d2-f209dd916eb9":{"roots":{"references":[{"attributes":{"columns":[{"id":"1002","type":"TableColumn"},{"id":"1003","type":"TableColumn"}],"source":{"id":"1004","type":"ColumnDataSource"},"view":{"id":"1006","type":"CDSView"}},"id":"1005","type":"DataTable"},{"attributes":{"source":{"id":"1004","type":"ColumnDataSource"}},"id":"1006","type":"CDSView"},{"attributes":{},"id":"1010","type":"StringEditor"},{"attributes":{"editor":{"id":"1008","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1007","type":"StringFormatter"},"title":"FromNodeId"},"id":"1002","type":"TableColumn"},{"attributes":{},"id":"1012","type":"Selection"},{"attributes":{},"id":"1009","type":"StringFormatter"},{"attributes":{},"id":"1007","type":"StringFormatter"},{"attributes":{},"id":"1011","type":"UnionRenderers"},{"attributes":{},"id":"1008","type":"StringEditor"},{"attributes":{"editor":{"id":"1010","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1009","type":"StringFormatter"},"title":"ToNodeId"},"id":"1003","type":"TableColumn"},{"attributes":{"callback":null,"data":{"FromNodeId":[9408099,9408099,9408099,9408099,9408099,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030,9501030],"ToNodeId":[9402002,9402005,9402044,9403198,9407087,9205081,9207053,9208055,9209016,9211056,9303057,9305142,9305185,9306052,9306125,9311120,9402002,9402032,9406105,9406128],"index":[150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169]},"selected":{"id":"1012","type":"Selection"},"selection_policy":{"id":"1011","type":"UnionRenderers"}},"id":"1004","type":"ColumnDataSource"}],"root_ids":["1005"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"df58a891-ac8c-4de6-85d2-f209dd916eb9","roots":{"1005":"e8dc13b6-eb87-4c2f-837d-64c43519cc35"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
 </div>
 
 </div>
@@ -13714,13 +13622,7 @@ var element = $('#bcb09fb7-ab68-4b2c-a6c4-7f7659436bdd');
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Paper that cites most papers</span>
-<span class="n">out_degree</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">out_degree</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
-    <span class="s2">&quot;FromNodeId&quot;</span><span class="p">:</span> <span class="s2">&quot;Paper&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ToNodeId&quot;</span><span class="p">:</span> <span class="s2">&quot;Papers cited&quot;</span>
-<span class="p">})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">modularity_df</span><span class="p">[</span><span class="n">modularity_df</span><span class="o">.</span><span class="n">Id</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13733,61 +13635,112 @@ var element = $('#bcb09fb7-ab68-4b2c-a6c4-7f7659436bdd');
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[7]:</div>
 
 
 
-<div class="output_html rendered_html output_subarea ">
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
 
-
-
-
-
-  <div class="bk-root" id="429e2be5-fac7-45b4-86d3-4d3349c6b9f8" data-root-id="1046"></div>
-
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Label</th>
+      <th>timeset</th>
+      <th>indegree</th>
+      <th>outdegree</th>
+      <th>Degree</th>
+    </tr>
+    <tr>
+      <th>Id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>93</td>
+      <td>93</td>
+      <td>93</td>
+      <td>93</td>
+      <td>93</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>29</td>
+      <td>29</td>
+      <td>29</td>
+      <td>29</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>9</td>
+      <td>9</td>
+      <td>9</td>
+      <td>9</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
 </div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="56bb47b6-d2b7-4763-b8be-f28162200496"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#56bb47b6-d2b7-4763-b8be-f28162200496');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"66d51946-6240-43e2-977b-a11b6cf4d846":{"roots":{"references":[{"attributes":{"columns":[{"id":"1043","type":"TableColumn"},{"id":"1044","type":"TableColumn"}],"source":{"id":"1045","type":"ColumnDataSource"},"view":{"id":"1047","type":"CDSView"}},"id":"1046","type":"DataTable"},{"attributes":{},"id":"1055","type":"StringEditor"},{"attributes":{},"id":"1056","type":"StringFormatter"},{"attributes":{},"id":"1059","type":"Selection"},{"attributes":{"editor":{"id":"1055","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1054","type":"StringFormatter"},"title":"Paper"},"id":"1043","type":"TableColumn"},{"attributes":{},"id":"1058","type":"UnionRenderers"},{"attributes":{"editor":{"id":"1057","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1056","type":"StringFormatter"},"title":"Papers cited"},"id":"1044","type":"TableColumn"},{"attributes":{"callback":null,"data":{"FromNodeId":[9905111,9710046,110055,210157,101126,7170,204089,201253,9809039,9802067,109162,207116,9802051,9712253,111208,209230,11197,210292,209241,106048],"ToNodeId":[562,359,302,289,274,263,246,226,216,214,212,211,207,201,200,198,181,180,177,175]},"selected":{"id":"1059","type":"Selection"},"selection_policy":{"id":"1058","type":"UnionRenderers"}},"id":"1045","type":"ColumnDataSource"},{"attributes":{},"id":"1057","type":"StringEditor"},{"attributes":{"source":{"id":"1045","type":"ColumnDataSource"}},"id":"1047","type":"CDSView"},{"attributes":{},"id":"1054","type":"StringFormatter"}],"root_ids":["1046"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"66d51946-6240-43e2-977b-a11b6cf4d846","roots":{"1046":"429e2be5-fac7-45b4-86d3-4d3349c6b9f8"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
 </div>
 
 </div>
@@ -13801,21 +13754,8 @@ var element = $('#56bb47b6-d2b7-4763-b8be-f28162200496');
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">out_degree</span><span class="p">[</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="nb">range</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">600</span><span class="p">])</span>
-
-<span class="c1"># Create the blank plot</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">plot_height</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">plot_width</span> <span class="o">=</span> <span class="mi">900</span><span class="p">,</span> 
-           <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Citations histogram (out_degree)&#39;</span><span class="p">,</span>
-          <span class="n">x_axis_label</span> <span class="o">=</span> <span class="s1">&#39;Papers cited&#39;</span><span class="p">,</span> 
-           <span class="n">y_axis_label</span> <span class="o">=</span> <span class="s1">&#39;Papers&#39;</span><span class="p">)</span>
-
-<span class="c1"># Add a quad glyph</span>
-<span class="n">p</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">hist</span><span class="p">,</span> 
-       <span class="n">left</span><span class="o">=</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
-       <span class="n">fill_color</span><span class="o">=</span> <span class="s1">&#39;navy&#39;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
-
-<span class="c1"># Show the plot</span>
-<span class="n">show</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">total_nodes</span> <span class="o">=</span> <span class="n">modularity_mt_nodes_df</span><span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="s1">&#39;Id&#39;</span><span class="p">]</span>
+<span class="n">total_nodes</span>
 </pre></div>
 
     </div>
@@ -13828,61 +13768,13 @@ var element = $('#56bb47b6-d2b7-4763-b8be-f28162200496');
 
 <div class="output_area">
 
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
-
-
-  <div class="bk-root" id="fe3f62cb-9636-43c5-a209-edae1a28c5c8" data-root-id="1091"></div>
-
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="7079d222-d79b-420f-820b-46ea9da07640"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#7079d222-d79b-420f-820b-46ea9da07640');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"9576736e-cee2-4356-b09b-53f27355a48e":{"roots":{"references":[{"attributes":{"below":[{"id":"1101","type":"LinearAxis"}],"left":[{"id":"1106","type":"LinearAxis"}],"plot_height":500,"plot_width":900,"renderers":[{"id":"1101","type":"LinearAxis"},{"id":"1105","type":"Grid"},{"id":"1106","type":"LinearAxis"},{"id":"1110","type":"Grid"},{"id":"1119","type":"BoxAnnotation"},{"id":"1129","type":"GlyphRenderer"}],"title":{"id":"1090","type":"Title"},"toolbar":{"id":"1117","type":"Toolbar"},"x_range":{"id":"1093","type":"DataRange1d"},"x_scale":{"id":"1097","type":"LinearScale"},"y_range":{"id":"1095","type":"DataRange1d"},"y_scale":{"id":"1099","type":"LinearScale"}},"id":"1091","subtype":"Figure","type":"Plot"},{"attributes":{"callback":null,"data":{"left":{"__ndarray__":"AAAAAAAAAAAAAAAAAAAYQAAAAAAAAChAAAAAAAAAMkAAAAAAAAA4QAAAAAAAAD5AAAAAAAAAQkAAAAAAAABFQAAAAAAAAEhAAAAAAAAAS0AAAAAAAABOQAAAAAAAgFBAAAAAAAAAUkAAAAAAAIBTQAAAAAAAAFVAAAAAAACAVkAAAAAAAABYQAAAAAAAgFlAAAAAAAAAW0AAAAAAAIBcQAAAAAAAAF5AAAAAAACAX0AAAAAAAIBgQAAAAAAAQGFAAAAAAAAAYkAAAAAAAMBiQAAAAAAAgGNAAAAAAABAZEAAAAAAAABlQAAAAAAAwGVAAAAAAACAZkAAAAAAAEBnQAAAAAAAAGhAAAAAAADAaEAAAAAAAIBpQAAAAAAAQGpAAAAAAAAAa0AAAAAAAMBrQAAAAAAAgGxAAAAAAABAbUAAAAAAAABuQAAAAAAAwG5AAAAAAACAb0AAAAAAACBwQAAAAAAAgHBAAAAAAADgcEAAAAAAAEBxQAAAAAAAoHFAAAAAAAAAckAAAAAAAGByQAAAAAAAwHJAAAAAAAAgc0AAAAAAAIBzQAAAAAAA4HNAAAAAAABAdEAAAAAAAKB0QAAAAAAAAHVAAAAAAABgdUAAAAAAAMB1QAAAAAAAIHZAAAAAAACAdkAAAAAAAOB2QAAAAAAAQHdAAAAAAACgd0AAAAAAAAB4QAAAAAAAYHhAAAAAAADAeEAAAAAAACB5QAAAAAAAgHlAAAAAAADgeUAAAAAAAEB6QAAAAAAAoHpAAAAAAAAAe0AAAAAAAGB7QAAAAAAAwHtAAAAAAAAgfEAAAAAAAIB8QAAAAAAA4HxAAAAAAABAfUAAAAAAAKB9QAAAAAAAAH5AAAAAAABgfkAAAAAAAMB+QAAAAAAAIH9AAAAAAACAf0AAAAAAAOB/QAAAAAAAIIBAAAAAAABQgEAAAAAAAICAQAAAAAAAsIBAAAAAAADggEAAAAAAABCBQAAAAAAAQIFAAAAAAABwgUAAAAAAAKCBQAAAAAAA0IFAAAAAAAAAgkAAAAAAADCCQAAAAAAAYIJAAAAAAACQgkA=","dtype":"float64","shape":[100]},"right":{"__ndarray__":"AAAAAAAAGEAAAAAAAAAoQAAAAAAAADJAAAAAAAAAOEAAAAAAAAA+QAAAAAAAAEJAAAAAAAAARUAAAAAAAABIQAAAAAAAAEtAAAAAAAAATkAAAAAAAIBQQAAAAAAAAFJAAAAAAACAU0AAAAAAAABVQAAAAAAAgFZAAAAAAAAAWEAAAAAAAIBZQAAAAAAAAFtAAAAAAACAXEAAAAAAAABeQAAAAAAAgF9AAAAAAACAYEAAAAAAAEBhQAAAAAAAAGJAAAAAAADAYkAAAAAAAIBjQAAAAAAAQGRAAAAAAAAAZUAAAAAAAMBlQAAAAAAAgGZAAAAAAABAZ0AAAAAAAABoQAAAAAAAwGhAAAAAAACAaUAAAAAAAEBqQAAAAAAAAGtAAAAAAADAa0AAAAAAAIBsQAAAAAAAQG1AAAAAAAAAbkAAAAAAAMBuQAAAAAAAgG9AAAAAAAAgcEAAAAAAAIBwQAAAAAAA4HBAAAAAAABAcUAAAAAAAKBxQAAAAAAAAHJAAAAAAABgckAAAAAAAMByQAAAAAAAIHNAAAAAAACAc0AAAAAAAOBzQAAAAAAAQHRAAAAAAACgdEAAAAAAAAB1QAAAAAAAYHVAAAAAAADAdUAAAAAAACB2QAAAAAAAgHZAAAAAAADgdkAAAAAAAEB3QAAAAAAAoHdAAAAAAAAAeEAAAAAAAGB4QAAAAAAAwHhAAAAAAAAgeUAAAAAAAIB5QAAAAAAA4HlAAAAAAABAekAAAAAAAKB6QAAAAAAAAHtAAAAAAABge0AAAAAAAMB7QAAAAAAAIHxAAAAAAACAfEAAAAAAAOB8QAAAAAAAQH1AAAAAAACgfUAAAAAAAAB+QAAAAAAAYH5AAAAAAADAfkAAAAAAACB/QAAAAAAAgH9AAAAAAADgf0AAAAAAACCAQAAAAAAAUIBAAAAAAACAgEAAAAAAALCAQAAAAAAA4IBAAAAAAAAQgUAAAAAAAECBQAAAAAAAcIFAAAAAAACggUAAAAAAANCBQAAAAAAAAIJAAAAAAAAwgkAAAAAAAGCCQAAAAAAAkIJAAAAAAADAgkA=","dtype":"float64","shape":[100]},"top":[8734,5642,3491,2460,1661,1106,711,425,260,193,97,79,44,34,20,16,13,11,5,2,11,2,5,3,2,3,5,2,2,2,2,0,0,3,1,3,1,1,0,0,0,1,0,1,0,1,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0]},"selected":{"id":"1150","type":"Selection"},"selection_policy":{"id":"1149","type":"UnionRenderers"}},"id":"1126","type":"ColumnDataSource"},{"attributes":{},"id":"1111","type":"PanTool"},{"attributes":{},"id":"1112","type":"WheelZoomTool"},{"attributes":{},"id":"1097","type":"LinearScale"},{"attributes":{"plot":null,"text":"Citations histogram (out_degree)"},"id":"1090","type":"Title"},{"attributes":{"overlay":{"id":"1119","type":"BoxAnnotation"}},"id":"1113","type":"BoxZoomTool"},{"attributes":{},"id":"1114","type":"SaveTool"},{"attributes":{"callback":null},"id":"1093","type":"DataRange1d"},{"attributes":{"source":{"id":"1126","type":"ColumnDataSource"}},"id":"1130","type":"CDSView"},{"attributes":{},"id":"1107","type":"BasicTicker"},{"attributes":{"callback":null},"id":"1095","type":"DataRange1d"},{"attributes":{"bottom":{"value":0},"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"left":{"field":"left"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"right":{"field":"right"},"top":{"field":"top"}},"id":"1128","type":"Quad"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"1119","type":"BoxAnnotation"},{"attributes":{},"id":"1149","type":"UnionRenderers"},{"attributes":{},"id":"1145","type":"BasicTickFormatter"},{"attributes":{"data_source":{"id":"1126","type":"ColumnDataSource"},"glyph":{"id":"1127","type":"Quad"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"1128","type":"Quad"},"selection_glyph":null,"view":{"id":"1130","type":"CDSView"}},"id":"1129","type":"GlyphRenderer"},{"attributes":{},"id":"1099","type":"LinearScale"},{"attributes":{},"id":"1102","type":"BasicTicker"},{"attributes":{"axis_label":"Papers cited","formatter":{"id":"1145","type":"BasicTickFormatter"},"plot":{"id":"1091","subtype":"Figure","type":"Plot"},"ticker":{"id":"1102","type":"BasicTicker"}},"id":"1101","type":"LinearAxis"},{"attributes":{},"id":"1150","type":"Selection"},{"attributes":{},"id":"1116","type":"HelpTool"},{"attributes":{},"id":"1147","type":"BasicTickFormatter"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"1111","type":"PanTool"},{"id":"1112","type":"WheelZoomTool"},{"id":"1113","type":"BoxZoomTool"},{"id":"1114","type":"SaveTool"},{"id":"1115","type":"ResetTool"},{"id":"1116","type":"HelpTool"}]},"id":"1117","type":"Toolbar"},{"attributes":{"axis_label":"Papers","formatter":{"id":"1147","type":"BasicTickFormatter"},"plot":{"id":"1091","subtype":"Figure","type":"Plot"},"ticker":{"id":"1107","type":"BasicTicker"}},"id":"1106","type":"LinearAxis"},{"attributes":{},"id":"1115","type":"ResetTool"},{"attributes":{"plot":{"id":"1091","subtype":"Figure","type":"Plot"},"ticker":{"id":"1102","type":"BasicTicker"}},"id":"1105","type":"Grid"},{"attributes":{"bottom":{"value":0},"fill_color":{"value":"navy"},"left":{"field":"left"},"line_color":{"value":"white"},"right":{"field":"right"},"top":{"field":"top"}},"id":"1127","type":"Quad"},{"attributes":{"dimension":1,"plot":{"id":"1091","subtype":"Figure","type":"Plot"},"ticker":{"id":"1107","type":"BasicTicker"}},"id":"1110","type":"Grid"}],"root_ids":["1091"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"9576736e-cee2-4356-b09b-53f27355a48e","roots":{"1091":"fe3f62cb-9636-43c5-a209-edae1a28c5c8"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
+<div class="output_text output_subarea output_execute_result">
+<pre>27391</pre>
 </div>
 
 </div>
@@ -13896,84 +13788,11 @@ var element = $('#7079d222-d79b-420f-820b-46ea9da07640');
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Paper cited the most -&gt; Most influential</span>
-<span class="n">in_degree</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">in_degree</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">{</span>
-    <span class="s2">&quot;ToNodeId&quot;</span><span class="p">:</span> <span class="s2">&quot;Paper&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;FromNodeId&quot;</span><span class="p">:</span> <span class="s2">&quot;Paper citations&quot;</span>
-<span class="p">})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># DF will contain the most important nodes of each modularity class</span>
+<span class="n">nodes_per_modularity_class_df</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="ece15590-38e2-4b96-94ae-824d1ab983ee" data-root-id="1202"></div>
-
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="7cffaca1-6cb4-4248-9eee-aade90b4fbdc"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#7cffaca1-6cb4-4248-9eee-aade90b4fbdc');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"1e003ee0-e29b-49cf-be2d-fa842f944637":{"roots":{"references":[{"attributes":{"columns":[{"id":"1199","type":"TableColumn"},{"id":"1200","type":"TableColumn"}],"source":{"id":"1201","type":"ColumnDataSource"},"view":{"id":"1203","type":"CDSView"}},"id":"1202","type":"DataTable"},{"attributes":{},"id":"1225","type":"StringEditor"},{"attributes":{},"id":"1226","type":"StringFormatter"},{"attributes":{},"id":"1224","type":"StringFormatter"},{"attributes":{},"id":"1228","type":"UnionRenderers"},{"attributes":{"source":{"id":"1201","type":"ColumnDataSource"}},"id":"1203","type":"CDSView"},{"attributes":{"callback":null,"data":{"FromNodeId":[2414,1775,1641,1299,1199,1155,1144,1114,1032,1006,807,788,788,775,748,701,651,520,494,475],"ToNodeId":[9711200,9802150,9802109,9407087,9610043,9510017,9908142,9503124,9906064,9408099,9905111,9510209,9711162,9510135,9410167,9611050,9601029,9602022,9603142,9803131]},"selected":{"id":"1229","type":"Selection"},"selection_policy":{"id":"1228","type":"UnionRenderers"}},"id":"1201","type":"ColumnDataSource"},{"attributes":{"editor":{"id":"1227","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1226","type":"StringFormatter"},"title":"Paper citations"},"id":"1200","type":"TableColumn"},{"attributes":{},"id":"1229","type":"Selection"},{"attributes":{"editor":{"id":"1225","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1224","type":"StringFormatter"},"title":"Paper"},"id":"1199","type":"TableColumn"},{"attributes":{},"id":"1227","type":"StringEditor"}],"root_ids":["1202"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"1e003ee0-e29b-49cf-be2d-fa842f944637","roots":{"1202":"ece15590-38e2-4b96-94ae-824d1ab983ee"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13983,21 +13802,22 @@ var element = $('#7cffaca1-6cb4-4248-9eee-aade90b4fbdc');
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">in_degree</span><span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-<span class="c1"># Create the blank plot</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">figure</span><span class="p">(</span><span class="n">plot_height</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">plot_width</span> <span class="o">=</span> <span class="mi">900</span><span class="p">,</span> 
-           <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Citations histogram (in_degree)&#39;</span><span class="p">,</span>
-          <span class="n">x_axis_label</span> <span class="o">=</span> <span class="s1">&#39;Paper citations&#39;</span><span class="p">,</span> 
-           <span class="n">y_axis_label</span> <span class="o">=</span> <span class="s1">&#39;Papers&#39;</span><span class="p">)</span>
-
-<span class="c1"># Add a quad glyph</span>
-<span class="n">p</span><span class="o">.</span><span class="n">quad</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="n">hist</span><span class="p">,</span> 
-       <span class="n">left</span><span class="o">=</span><span class="n">edges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="o">=</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span>
-       <span class="n">fill_color</span><span class="o">=</span> <span class="s1">&#39;navy&#39;</span><span class="p">,</span> <span class="n">line_color</span><span class="o">=</span><span class="s1">&#39;white&#39;</span><span class="p">)</span>
-
-<span class="c1"># Show the plot</span>
-<span class="n">show</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">modularity_mt_nodes_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+    
+    <span class="n">modularity</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">total_nodes_in_class</span> <span class="o">=</span> <span class="n">modularity_mt_nodes_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">modularity</span><span class="p">][</span><span class="s1">&#39;Id&#39;</span><span class="p">]</span>
+    <span class="n">proportion_of_network</span> <span class="o">=</span> <span class="p">(</span><span class="n">total_nodes_in_class</span> <span class="o">/</span> <span class="n">total_nodes</span><span class="p">)</span>
+    <span class="n">subset_of_nodes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">proportion_of_network</span> <span class="o">*</span> <span class="n">total_nodes_in_class</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Modularity class: </span><span class="si">{modularity}</span><span class="s2"> - Total nodes in class: </span><span class="si">{total_nodes_in_class}</span><span class="s2"> - Proportion of final network: </span><span class="si">{proportion_of_network}</span><span class="s2"> - New total </span><span class="si">{subset_of_nodes}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="n">aux</span> <span class="o">=</span> <span class="n">gephi_df</span><span class="p">[</span><span class="n">gephi_df</span><span class="o">.</span><span class="n">modularity_class</span> <span class="o">==</span> <span class="n">modularity</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Degree&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)[:</span><span class="n">subset_of_nodes</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">nodes_per_modularity_class_df</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nodes_per_modularity_class_df</span> <span class="o">=</span> <span class="n">aux</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">nodes_per_modularity_class_df</span> <span class="o">=</span> <span class="n">nodes_per_modularity_class_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14013,60 +13833,32 @@ var element = $('#7cffaca1-6cb4-4248-9eee-aade90b4fbdc');
     <div class="prompt"></div>
 
 
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="30e6c284-106a-40f4-b83f-bba0c589eca2" data-root-id="1261"></div>
-
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Modularity class: 2 - Total nodes in class: 3378 - Proportion of final network: 0.12332517980358512 - New total 418
+Modularity class: 34 - Total nodes in class: 2370 - Proportion of final network: 0.08652477091015297 - New total 206
+Modularity class: 37 - Total nodes in class: 2337 - Proportion of final network: 0.08531999561899895 - New total 200
+Modularity class: 54 - Total nodes in class: 1899 - Proportion of final network: 0.06932934175459092 - New total 133
+Modularity class: 62 - Total nodes in class: 1668 - Proportion of final network: 0.060895914716512727 - New total 103
+Modularity class: 11 - Total nodes in class: 1562 - Proportion of final network: 0.05702603044795736 - New total 90
+Modularity class: 3 - Total nodes in class: 1550 - Proportion of final network: 0.05658793034208317 - New total 89
+Modularity class: 16 - Total nodes in class: 1538 - Proportion of final network: 0.056149830236208974 - New total 87
+Modularity class: 7 - Total nodes in class: 1508 - Proportion of final network: 0.05505457997152349 - New total 84
+Modularity class: 25 - Total nodes in class: 1492 - Proportion of final network: 0.05447044649702457 - New total 82
+Modularity class: 0 - Total nodes in class: 1392 - Proportion of final network: 0.0508196122814063 - New total 72
+Modularity class: 6 - Total nodes in class: 1281 - Proportion of final network: 0.046767186302070024 - New total 61
+Modularity class: 8 - Total nodes in class: 1190 - Proportion of final network: 0.0434449271658574 - New total 53
+Modularity class: 1 - Total nodes in class: 994 - Proportion of final network: 0.03628929210324559 - New total 37
+Modularity class: 19 - Total nodes in class: 953 - Proportion of final network: 0.0347924500748421 - New total 34
+Modularity class: 4 - Total nodes in class: 910 - Proportion of final network: 0.03322259136212625 - New total 31
+Modularity class: 65 - Total nodes in class: 658 - Proportion of final network: 0.02402248913876821 - New total 17
+Modularity class: 31 - Total nodes in class: 288 - Proportion of final network: 0.010514402540980614 - New total 4
+Modularity class: 9 - Total nodes in class: 219 - Proportion of final network: 0.007995326932204009 - New total 3
+Modularity class: 14 - Total nodes in class: 173 - Proportion of final network: 0.006315943193019605 - New total 2
+Modularity class: 13 - Total nodes in class: 11 - Proportion of final network: 0.00040159176371800954 - New total 1
+Modularity class: 49 - Total nodes in class: 10 - Proportion of final network: 0.0003650834215618269 - New total 1
+Modularity class: 46 - Total nodes in class: 10 - Proportion of final network: 0.0003650834215618269 - New total 1
+</pre>
 </div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="a51458b1-39d5-4be0-8a9a-358f75abdfe7"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#a51458b1-39d5-4be0-8a9a-358f75abdfe7');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"732c610f-5120-48d3-8b63-dbfb02d376af":{"roots":{"references":[{"attributes":{"below":[{"id":"1271","type":"LinearAxis"}],"left":[{"id":"1276","type":"LinearAxis"}],"plot_height":500,"plot_width":900,"renderers":[{"id":"1271","type":"LinearAxis"},{"id":"1275","type":"Grid"},{"id":"1276","type":"LinearAxis"},{"id":"1280","type":"Grid"},{"id":"1289","type":"BoxAnnotation"},{"id":"1299","type":"GlyphRenderer"}],"title":{"id":"1260","type":"Title"},"toolbar":{"id":"1287","type":"Toolbar"},"x_range":{"id":"1263","type":"DataRange1d"},"x_scale":{"id":"1267","type":"LinearScale"},"y_range":{"id":"1265","type":"DataRange1d"},"y_scale":{"id":"1269","type":"LinearScale"}},"id":"1261","subtype":"Figure","type":"Plot"},{"attributes":{"data_source":{"id":"1296","type":"ColumnDataSource"},"glyph":{"id":"1297","type":"Quad"},"hover_glyph":null,"muted_glyph":null,"nonselection_glyph":{"id":"1298","type":"Quad"},"selection_glyph":null,"view":{"id":"1300","type":"CDSView"}},"id":"1299","type":"GlyphRenderer"},{"attributes":{},"id":"1285","type":"ResetTool"},{"attributes":{},"id":"1281","type":"PanTool"},{"attributes":{"source":{"id":"1296","type":"ColumnDataSource"}},"id":"1300","type":"CDSView"},{"attributes":{"axis_label":"Papers","formatter":{"id":"1331","type":"BasicTickFormatter"},"plot":{"id":"1261","subtype":"Figure","type":"Plot"},"ticker":{"id":"1277","type":"BasicTicker"}},"id":"1276","type":"LinearAxis"},{"attributes":{},"id":"1282","type":"WheelZoomTool"},{"attributes":{},"id":"1267","type":"LinearScale"},{"attributes":{"bottom":{"value":0},"fill_color":{"value":"navy"},"left":{"field":"left"},"line_color":{"value":"white"},"right":{"field":"right"},"top":{"field":"top"}},"id":"1297","type":"Quad"},{"attributes":{"dimension":1,"plot":{"id":"1261","subtype":"Figure","type":"Plot"},"ticker":{"id":"1277","type":"BasicTicker"}},"id":"1280","type":"Grid"},{"attributes":{"callback":null},"id":"1263","type":"DataRange1d"},{"attributes":{},"id":"1329","type":"BasicTickFormatter"},{"attributes":{"plot":null,"text":"Citations histogram (in_degree)"},"id":"1260","type":"Title"},{"attributes":{"overlay":{"id":"1289","type":"BoxAnnotation"}},"id":"1283","type":"BoxZoomTool"},{"attributes":{},"id":"1284","type":"SaveTool"},{"attributes":{"callback":null},"id":"1265","type":"DataRange1d"},{"attributes":{"plot":{"id":"1261","subtype":"Figure","type":"Plot"},"ticker":{"id":"1272","type":"BasicTicker"}},"id":"1275","type":"Grid"},{"attributes":{},"id":"1272","type":"BasicTicker"},{"attributes":{},"id":"1331","type":"BasicTickFormatter"},{"attributes":{},"id":"1269","type":"LinearScale"},{"attributes":{"active_drag":"auto","active_inspect":"auto","active_multi":null,"active_scroll":"auto","active_tap":"auto","tools":[{"id":"1281","type":"PanTool"},{"id":"1282","type":"WheelZoomTool"},{"id":"1283","type":"BoxZoomTool"},{"id":"1284","type":"SaveTool"},{"id":"1285","type":"ResetTool"},{"id":"1286","type":"HelpTool"}]},"id":"1287","type":"Toolbar"},{"attributes":{},"id":"1286","type":"HelpTool"},{"attributes":{},"id":"1277","type":"BasicTicker"},{"attributes":{"axis_label":"Paper citations","formatter":{"id":"1329","type":"BasicTickFormatter"},"plot":{"id":"1261","subtype":"Figure","type":"Plot"},"ticker":{"id":"1272","type":"BasicTicker"}},"id":"1271","type":"LinearAxis"},{"attributes":{"bottom":{"value":0},"fill_alpha":{"value":0.1},"fill_color":{"value":"#1f77b4"},"left":{"field":"left"},"line_alpha":{"value":0.1},"line_color":{"value":"#1f77b4"},"right":{"field":"right"},"top":{"field":"top"}},"id":"1298","type":"Quad"},{"attributes":{},"id":"1334","type":"Selection"},{"attributes":{"bottom_units":"screen","fill_alpha":{"value":0.5},"fill_color":{"value":"lightgrey"},"left_units":"screen","level":"overlay","line_alpha":{"value":1.0},"line_color":{"value":"black"},"line_dash":[4,4],"line_width":{"value":2},"plot":null,"render_mode":"css","right_units":"screen","top_units":"screen"},"id":"1289","type":"BoxAnnotation"},{"attributes":{},"id":"1333","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"left":{"__ndarray__":"AAAAAAAA8D/hehSuRyE5QOF6FK5HoUhAKVyPwvVYUkDhehSuR2FYQJmZmZmZaV5AKVyPwvU4YkCF61G4Hj1lQOF6FK5HQWhAPQrXo3BFa0CZmZmZmUluQHsUrkfhpnBAKVyPwvUockDXo3A9CqtzQIXrUbgeLXVAMzMzMzOvdkDhehSuRzF4QI/C9Shcs3lAPQrXo3A1e0DrUbgehbd8QJmZmZmZOX5AR+F6FK67f0B7FK5H4Z6AQFK4HoXrX4FAKVyPwvUggkAAAAAAAOKCQNejcD0Ko4NArkfhehRkhECF61G4HiWFQFyPwvUo5oVAMzMzMzOnhkAK16NwPWiHQOF6FK5HKYhAuB6F61HqiECPwvUoXKuJQGZmZmZmbIpAPQrXo3Ati0AUrkfheu6LQOtRuB6Fr4xAwvUoXI9wjUCZmZmZmTGOQHA9Ctej8o5AR+F6FK6zj0CPwvUoXDqQQHsUrkfhmpBAZmZmZmb7kEBSuB6F61uRQD0K16NwvJFAKVyPwvUckkAUrkfhen2SQAAAAAAA3pJA61G4HoU+k0DXo3A9Cp+TQML1KFyP/5NArkfhehRglECZmZmZmcCUQIXrUbgeIZVAcD0K16OBlUBcj8L1KOKVQEfhehSuQpZAMzMzMzOjlkAehetRuAOXQArXo3A9ZJdA9Shcj8LEl0DhehSuRyWYQM3MzMzMhZhAuB6F61HmmECkcD0K10aZQI/C9Shcp5lAexSuR+EHmkBmZmZmZmiaQFK4HoXryJpAPQrXo3Apm0ApXI/C9YmbQBSuR+F66ptAAAAAAABLnEDrUbgehaucQNejcD0KDJ1AwvUoXI9snUCuR+F6FM2dQJmZmZmZLZ5AhetRuB6OnkBwPQrXo+6eQFyPwvUoT59AR+F6FK6vn0CZmZmZGQigQI/C9ShcOKBAhetRuJ5ooEB7FK5H4ZigQHA9CtcjyaBAZmZmZmb5oEBcj8L1qCmhQFK4HoXrWaFAR+F6FC6KoUA9CtejcLqhQDMzMzOz6qFAKVyPwvUaokAfhetROEuiQBSuR+F6e6JACtejcL2rokA=","dtype":"float64","shape":[100]},"right":{"__ndarray__":"4XoUrkchOUDhehSuR6FIQClcj8L1WFJA4XoUrkdhWECZmZmZmWleQClcj8L1OGJAhetRuB49ZUDhehSuR0FoQD0K16NwRWtAmZmZmZlJbkB7FK5H4aZwQClcj8L1KHJA16NwPQqrc0CF61G4Hi11QDMzMzMzr3ZA4XoUrkcxeECPwvUoXLN5QD0K16NwNXtA61G4HoW3fECZmZmZmTl+QEfhehSuu39AexSuR+GegEBSuB6F61+BQClcj8L1IIJAAAAAAADigkDXo3A9CqODQK5H4XoUZIRAhetRuB4lhUBcj8L1KOaFQDMzMzMzp4ZACtejcD1oh0DhehSuRymIQLgehetR6ohAj8L1KFyriUBmZmZmZmyKQD0K16NwLYtAFK5H4Xrui0DrUbgeha+MQML1KFyPcI1AmZmZmZkxjkBwPQrXo/KOQEfhehSus49Aj8L1KFw6kEB7FK5H4ZqQQGZmZmZm+5BAUrgehetbkUA9CtejcLyRQClcj8L1HJJAFK5H4Xp9kkAAAAAAAN6SQOtRuB6FPpNA16NwPQqfk0DC9Shcj/+TQK5H4XoUYJRAmZmZmZnAlECF61G4HiGVQHA9CtejgZVAXI/C9SjilUBH4XoUrkKWQDMzMzMzo5ZAHoXrUbgDl0AK16NwPWSXQPUoXI/CxJdA4XoUrkclmEDNzMzMzIWYQLgehetR5phApHA9CtdGmUCPwvUoXKeZQHsUrkfhB5pAZmZmZmZomkBSuB6F68iaQD0K16NwKZtAKVyPwvWJm0AUrkfheuqbQAAAAAAAS5xA61G4HoWrnEDXo3A9CgydQML1KFyPbJ1ArkfhehTNnUCZmZmZmS2eQIXrUbgejp5AcD0K16PunkBcj8L1KE+fQEfhehSur59AmZmZmRkIoECPwvUoXDigQIXrUbieaKBAexSuR+GYoEBwPQrXI8mgQGZmZmZm+aBAXI/C9agpoUBSuB6F61mhQEfhehQuiqFAPQrXo3C6oUAzMzMzs+qhQClcj8L1GqJAH4XrUThLokAUrkfhenuiQArXo3C9q6JAAAAAAADcokA=","dtype":"float64","shape":[100]},"top":[19926,1882,619,285,152,84,62,45,24,27,9,6,8,12,4,5,3,4,2,2,1,1,0,0,0,0,1,0,0,1,1,0,3,1,0,0,0,0,0,0,0,1,1,0,0,0,1,2,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]},"selected":{"id":"1334","type":"Selection"},"selection_policy":{"id":"1333","type":"UnionRenderers"}},"id":"1296","type":"ColumnDataSource"}],"root_ids":["1261"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"732c610f-5120-48d3-8b63-dbfb02d376af","roots":{"1261":"30e6c284-106a-40f4-b83f-bba0c589eca2"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
 </div>
 
 </div>
@@ -14078,11 +13870,8 @@ var element = $('#a51458b1-39d5-4be0-8a9a-358f75abdfe7');
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">degrees</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">in_degree</span><span class="p">,</span> <span class="n">out_degree</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">degrees</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;out_degree&#39;</span><span class="p">,</span> <span class="s1">&#39;in_degree&#39;</span><span class="p">]</span>
-<span class="n">degrees</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span>
-
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">degrees</span><span class="p">,</span> <span class="n">include_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">nodes_per_modularity_class_df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Most important nodes of our network: &quot;</span><span class="p">,</span> <span class="n">nodes_per_modularity_class_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -14106,7 +13895,7 @@ var element = $('#a51458b1-39d5-4be0-8a9a-358f75abdfe7');
 
 
 
-  <div class="bk-root" id="2387995f-3370-436b-9315-6ca596c9a852" data-root-id="1387"></div>
+  <div class="bk-root" id="1bebc40b-1103-4f56-9267-fb31f88e76dc" data-root-id="1116"></div>
 
 </div>
 
@@ -14120,15 +13909,15 @@ var element = $('#a51458b1-39d5-4be0-8a9a-358f75abdfe7');
 
 
 
-<div id="83c6571c-610a-4c8c-af85-7f0d82120aa4"></div>
+<div id="3be03750-5dc7-4679-b6fe-b53301aab560"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#83c6571c-610a-4c8c-af85-7f0d82120aa4');
+var element = $('#3be03750-5dc7-4679-b6fe-b53301aab560');
 (function(root) {
   function embed_document(root) {
     
-  var docs_json = {"40af12ba-a1a8-46b3-90cb-87e8ea6b12e2":{"roots":{"references":[{"attributes":{"columns":[{"id":"1383","type":"TableColumn"},{"id":"1384","type":"TableColumn"},{"id":"1385","type":"TableColumn"}],"source":{"id":"1386","type":"ColumnDataSource"},"view":{"id":"1388","type":"CDSView"}},"id":"1387","type":"DataTable"},{"attributes":{},"id":"1426","type":"StringEditor"},{"attributes":{},"id":"1427","type":"StringFormatter"},{"attributes":{},"id":"1428","type":"StringEditor"},{"attributes":{"source":{"id":"1386","type":"ColumnDataSource"}},"id":"1388","type":"CDSView"},{"attributes":{},"id":"1425","type":"StringFormatter"},{"attributes":{},"id":"1424","type":"StringEditor"},{"attributes":{},"id":"1430","type":"Selection"},{"attributes":{"editor":{"id":"1426","type":"StringEditor"},"field":"out_degree","formatter":{"id":"1425","type":"StringFormatter"},"title":"out_degree"},"id":"1384","type":"TableColumn"},{"attributes":{},"id":"1423","type":"StringFormatter"},{"attributes":{},"id":"1429","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"in_degree":{"__ndarray__":"AAAAAADAVEAAAAAAAABCQAAAAAAAAPA/AAAAAAAA8D8AAAAAAAA1QAAAAAAAAPA/AAAAAAAAEEAAAAAAAAAYQAAAAAAAAPA/AAAAAAAAFEAAAAAAAAA0QAAAAAAAACRAAAAAAAAAJkAAAAAAAAAgQAAAAAAAAPA/AAAAAAAAM0AAAAAAAAAkQAAAAAAAADJAAAAAAAAAIkAAAAAAAADwPw==","dtype":"float64","shape":[20]},"out_degree":{"__ndarray__":"AAAAAAAAJEAAAAAAAIBFQAAAAAAAAC5AAAAAAAAA8D8AAAAAAADwPwAAAAAAAPA/AAAAAAAA+H8AAAAAAAAAQAAAAAAAAPA/AAAAAAAAKEAAAAAAAAAQQAAAAAAAgEJAAAAAAAAAMEAAAAAAAAAIQAAAAAAAAPh/AAAAAAAAIEAAAAAAAAAUQAAAAAAAACRAAAAAAAAAGEAAAAAAAAD4fw==","dtype":"float64","shape":[20]},"paper":[1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019,1020]},"selected":{"id":"1430","type":"Selection"},"selection_policy":{"id":"1429","type":"UnionRenderers"}},"id":"1386","type":"ColumnDataSource"},{"attributes":{"editor":{"id":"1428","type":"StringEditor"},"field":"in_degree","formatter":{"id":"1427","type":"StringFormatter"},"title":"in_degree"},"id":"1385","type":"TableColumn"},{"attributes":{"editor":{"id":"1424","type":"StringEditor"},"field":"paper","formatter":{"id":"1423","type":"StringFormatter"},"title":"paper"},"id":"1383","type":"TableColumn"}],"root_ids":["1387"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"40af12ba-a1a8-46b3-90cb-87e8ea6b12e2","roots":{"1387":"2387995f-3370-436b-9315-6ca596c9a852"}}];
+  var docs_json = {"649aae2b-093c-4ce7-a8b0-d753facaca9b":{"roots":{"references":[{"attributes":{"columns":[{"id":"1108","type":"TableColumn"},{"id":"1109","type":"TableColumn"},{"id":"1110","type":"TableColumn"},{"id":"1111","type":"TableColumn"},{"id":"1112","type":"TableColumn"},{"id":"1113","type":"TableColumn"},{"id":"1114","type":"TableColumn"}],"source":{"id":"1115","type":"ColumnDataSource"},"view":{"id":"1117","type":"CDSView"}},"id":"1116","type":"DataTable"},{"attributes":{"editor":{"id":"1141","type":"StringEditor"},"field":"modularity_class","formatter":{"id":"1140","type":"StringFormatter"},"title":"modularity_class"},"id":"1111","type":"TableColumn"},{"attributes":{},"id":"1146","type":"StringFormatter"},{"attributes":{"editor":{"id":"1145","type":"StringEditor"},"field":"outdegree","formatter":{"id":"1144","type":"StringFormatter"},"title":"outdegree"},"id":"1113","type":"TableColumn"},{"attributes":{},"id":"1147","type":"StringEditor"},{"attributes":{"editor":{"id":"1143","type":"StringEditor"},"field":"indegree","formatter":{"id":"1142","type":"StringFormatter"},"title":"indegree"},"id":"1112","type":"TableColumn"},{"attributes":{},"id":"1148","type":"UnionRenderers"},{"attributes":{"editor":{"id":"1139","type":"StringEditor"},"field":"timeset","formatter":{"id":"1138","type":"StringFormatter"},"title":"timeset"},"id":"1110","type":"TableColumn"},{"attributes":{},"id":"1149","type":"Selection"},{"attributes":{"editor":{"id":"1147","type":"StringEditor"},"field":"Degree","formatter":{"id":"1146","type":"StringFormatter"},"title":"Degree"},"id":"1114","type":"TableColumn"},{"attributes":{},"id":"1145","type":"StringEditor"},{"attributes":{"callback":null,"data":{"Degree":[1218,1165,1124,790,773,772,678,462,461,457,434,431,429,397,394,391,388,370,370,354],"Id":[9610043,9510017,9503124,9510135,9410167,9611050,9601029,9412184,9401139,9602052,9608024,9710046,9910053,9510169,9512077,9501068,9508143,9602043,9703030,9512062],"Label":[9610043,9510017,9503124,9510135,9410167,9611050,9601029,9412184,9401139,9602052,9608024,9710046,9910053,9510169,9512077,9501068,9508143,9602043,9703030,9512062],"indegree":[1199,1155,1114,775,748,701,651,426,421,406,383,72,331,388,380,385,373,340,347,333],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"modularity_class":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"outdegree":[19,10,10,15,25,71,27,36,40,51,51,359,98,9,14,6,15,30,23,21],"timeset":{"__ndarray__":"AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fwAAAAAAAPh/AAAAAAAA+H8AAAAAAAD4fw==","dtype":"float64","shape":[20]}},"selected":{"id":"1149","type":"Selection"},"selection_policy":{"id":"1148","type":"UnionRenderers"}},"id":"1115","type":"ColumnDataSource"},{"attributes":{},"id":"1144","type":"StringFormatter"},{"attributes":{},"id":"1135","type":"StringEditor"},{"attributes":{},"id":"1143","type":"StringEditor"},{"attributes":{},"id":"1136","type":"StringFormatter"},{"attributes":{},"id":"1134","type":"StringFormatter"},{"attributes":{},"id":"1141","type":"StringEditor"},{"attributes":{"editor":{"id":"1137","type":"StringEditor"},"field":"Label","formatter":{"id":"1136","type":"StringFormatter"},"title":"Label"},"id":"1109","type":"TableColumn"},{"attributes":{"editor":{"id":"1135","type":"StringEditor"},"field":"Id","formatter":{"id":"1134","type":"StringFormatter"},"title":"Id"},"id":"1108","type":"TableColumn"},{"attributes":{"source":{"id":"1115","type":"ColumnDataSource"}},"id":"1117","type":"CDSView"},{"attributes":{},"id":"1137","type":"StringEditor"},{"attributes":{},"id":"1138","type":"StringFormatter"},{"attributes":{},"id":"1139","type":"StringEditor"},{"attributes":{},"id":"1140","type":"StringFormatter"},{"attributes":{},"id":"1142","type":"StringFormatter"}],"root_ids":["1116"]},"title":"Bokeh Application","version":"1.0.4"}};
+  var render_items = [{"docid":"649aae2b-093c-4ce7-a8b0-d753facaca9b","roots":{"1116":"1bebc40b-1103-4f56-9267-fb31f88e76dc"}}];
   root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
 
   }
@@ -14154,67 +13943,31 @@ var element = $('#83c6571c-610a-4c8c-af85-7f0d82120aa4');
 
 </div>
 
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Most important nodes of our network:  1809
+</pre>
 </div>
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Process-paper-abstracts">Process paper abstracts<a class="anchor-link" href="#Process-paper-abstracts">&#182;</a></h1>
 </div>
-</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abstracts_info</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">dir_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ABSTRACTS_FOLDER_PATH}</span><span class="s2">&quot;</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
-        
-        <span class="k">for</span> <span class="n">f_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ABSTRACTS_FOLDER_PATH}</span><span class="s2">/</span><span class="si">{year}</span><span class="s2">&quot;</span><span class="p">):</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ABSTRACTS_FOLDER_PATH}</span><span class="s2">/</span><span class="si">{year}</span><span class="s2">/</span><span class="si">{f_name}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">abstract</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-                
-                <span class="c1"># Parts of the abstract</span>
-                <span class="n">abstract_parts</span> <span class="o">=</span> <span class="n">abstract</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">)</span>
-                
-                <span class="n">paper_description</span> <span class="o">=</span> <span class="p">(</span><span class="n">abstract_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">abstract_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                
-                <span class="c1"># Process emails</span>
-                <span class="n">emails_found</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\w\.-]+@[\w\.-]+&#39;</span><span class="p">,</span> <span class="n">abstract</span><span class="p">)</span>
-                
-                <span class="n">emails</span> <span class="o">=</span> <span class="p">[]</span>
-                
-                <span class="k">for</span> <span class="n">email</span> <span class="ow">in</span> <span class="n">emails_found</span><span class="p">:</span>
-                    <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                    
-                    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">email</span><span class="p">:</span>
-                        <span class="c1"># Remove cases when email finishes with a period</span>
-                        <span class="k">if</span> <span class="n">email</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-                            <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                        
-                        <span class="n">emails</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
-                
-                
-                <span class="n">key</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">f_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.abs&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-                
-                <span class="n">abstracts_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;emails&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">emails</span><span class="p">)),</span>
-<span class="c1">#                     &quot;tlds&quot;: list(set(tlds)),</span>
-<span class="c1">#                     &quot;domains&quot;: list(set(domains)),</span>
-                    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">paper_description</span>
-                <span class="p">}</span>
-                
-                <span class="n">abstracts_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_text_from_abstract</span><span class="p">(</span><span class="n">abstract</span><span class="p">))</span>
-                
-                
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">pass</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/cit-HepTh.txt&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">hepth_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">skiprows</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+    
+<span class="c1"># Rename columns</span>
+<span class="n">hepth_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -14227,22 +13980,7 @@ var element = $('#83c6571c-610a-4c8c-af85-7f0d82120aa4');
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">papers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">abstracts_info</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
-
-<span class="n">papers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">papers</span><span class="p">,</span> <span class="n">degrees</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">papers</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">hepth_df</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14255,116 +13993,143 @@ var element = $('#83c6571c-610a-4c8c-af85-7f0d82120aa4');
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[14]:</div>
+    <div class="prompt"></div>
 
 
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
+<div class="output_html rendered_html output_subarea ">
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
 
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>emails</th>
-      <th>description</th>
-      <th>date</th>
-      <th>from</th>
-      <th>title</th>
-      <th>authors</th>
-      <th>comments</th>
-      <th>subj-class</th>
-      <th>journal-ref</th>
-      <th>out_degree</th>
-      <th>in_degree</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>1001</th>
-      <td>[psa@math.duke.edu]</td>
-      <td>These are notes based on lectures given at TAS...</td>
-      <td>Sat, 1 Jan 2000 00:02:31 GMT   (84kb)</td>
-      <td>Paul S. Aspinwall &lt;psa@math.duke.edu&gt;</td>
-      <td>Compactification, Geometry and Duality: N=2</td>
-      <td>Paul S. Aspinwall</td>
-      <td>82 pages, 8 figures, LaTeX2e, TASI99, refs add...</td>
-      <td>None</td>
-      <td>None</td>
-      <td>10.0</td>
-      <td>83.0</td>
-    </tr>
-    <tr>
-      <th>1002</th>
-      <td>[pope@absinthe.physics.tamu.edu]</td>
-      <td>We point out that massive gauged supergravity ...</td>
-      <td>Mon, 3 Jan 2000 22:38:03 GMT   (64kb)</td>
-      <td>Chris Pope &lt;pope@absinthe.physics.tamu.edu&gt;</td>
-      <td>Domain Walls and Massive Gauged Supergravity P...</td>
-      <td>M. Cvetic, H. Lu and C.N. Pope</td>
-      <td>latex file, 11 pages, 3 figures</td>
-      <td>None</td>
-      <td>Class.Quant.Grav. 17 (2000) 4867-4876</td>
-      <td>43.0</td>
-      <td>36.0</td>
-    </tr>
-    <tr>
-      <th>1003</th>
-      <td>[kang@physics.inje.ac.kr]</td>
-      <td>Recently, Ivanov and Volovich (hep-th/9912242)...</td>
-      <td>Sat, 1 Jan 2000 06:14:51 GMT   (2kb)</td>
-      <td>KANG Gungwon &lt;kang@physics.inje.ac.kr&gt;</td>
-      <td>Comment on "Metric Fluctuations in Brane Worlds"</td>
-      <td>Y.S. Myung and Gungwon Kang</td>
-      <td>4 pages, revtex</td>
-      <td>None</td>
-      <td>None</td>
-      <td>15.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>1004</th>
-      <td>[adam@godel.math.missouri.edu]</td>
-      <td>Quantum fields responding to "moving mirrors" ...</td>
-      <td>Sat, 1 Jan 2000 19:57:21 GMT   (13kb)</td>
-      <td>Adam D. Helfer &lt;adam@godel.math.missouri.edu&gt;</td>
-      <td>Moving Mirrors and Thermodynamic Paradoxes</td>
-      <td>Adam D. Helfer</td>
-      <td>7 pages, Revtex with Latex2e</td>
-      <td>None</td>
-      <td>Phys.Rev. D63 (2001) 025016</td>
-      <td>1.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>1005</th>
-      <td>[jfuchs@mail.desy.de]</td>
-      <td>Various aspects of spaces of chiral blocks are...</td>
-      <td>Sun, 2 Jan 2000 17:06:40 GMT   (24kb)</td>
-      <td>Juergen Fuchs &lt;jfuchs@mail.desy.de&gt;</td>
-      <td>Bundles of chiral blocks and boundary conditio...</td>
-      <td>J. Fuchs, C. Schweigert</td>
-      <td>18 pages, LaTeX2e; slightly extended version o...</td>
-      <td>None</td>
-      <td>None</td>
-      <td>1.0</td>
-      <td>21.0</td>
-    </tr>
-  </tbody>
-</table>
+
+
+
+
+  <div class="bk-root" id="5a20db28-11ba-4aa6-bc43-d646cef525d9" data-root-id="1233"></div>
+
 </div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+
+<div id="3a03cac4-f168-4abe-952d-226ea23c93fb"></div>
+<div class="output_subarea output_javascript ">
+<script type="text/javascript">
+var element = $('#3a03cac4-f168-4abe-952d-226ea23c93fb');
+(function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"42071527-7f0e-43eb-bc00-c355c9da3a90":{"roots":{"references":[{"attributes":{"columns":[{"id":"1230","type":"TableColumn"},{"id":"1231","type":"TableColumn"}],"source":{"id":"1232","type":"ColumnDataSource"},"view":{"id":"1234","type":"CDSView"}},"id":"1233","type":"DataTable"},{"attributes":{},"id":"1272","type":"Selection"},{"attributes":{},"id":"1271","type":"UnionRenderers"},{"attributes":{"editor":{"id":"1268","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1267","type":"StringFormatter"},"title":"FromNodeId"},"id":"1230","type":"TableColumn"},{"attributes":{"callback":null,"data":{"FromNodeId":[1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001],"ToNodeId":[9304045,9308122,9309097,9311042,9401139,9404151,9407087,9408099,9501030,9503124,9504090,9504145,9505025,9505054,9505105,9505162,9506048,9506112,9506144,9507050],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"selected":{"id":"1272","type":"Selection"},"selection_policy":{"id":"1271","type":"UnionRenderers"}},"id":"1232","type":"ColumnDataSource"},{"attributes":{},"id":"1267","type":"StringFormatter"},{"attributes":{},"id":"1269","type":"StringFormatter"},{"attributes":{},"id":"1270","type":"StringEditor"},{"attributes":{},"id":"1268","type":"StringEditor"},{"attributes":{"source":{"id":"1232","type":"ColumnDataSource"}},"id":"1234","type":"CDSView"},{"attributes":{"editor":{"id":"1270","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1269","type":"StringFormatter"},"title":"ToNodeId"},"id":"1231","type":"TableColumn"}],"root_ids":["1233"]},"title":"Bokeh Application","version":"1.0.4"}};
+  var render_items = [{"docid":"42071527-7f0e-43eb-bc00-c355c9da3a90","roots":{"1233":"5a20db28-11ba-4aa6-bc43-d646cef525d9"}}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nodes_with_modularity_df</span> <span class="o">=</span> <span class="n">nodes_per_modularity_class_df</span><span class="p">[[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_class&#39;</span><span class="p">]]</span>
+<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">nodes_with_modularity_df</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+
+
+
+
+
+  <div class="bk-root" id="d8137a75-fbac-4d9c-a704-776ef829dfa5" data-root-id="1306"></div>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+
+<div id="08662057-02de-4535-9caf-74aac7b7f4ed"></div>
+<div class="output_subarea output_javascript ">
+<script type="text/javascript">
+var element = $('#08662057-02de-4535-9caf-74aac7b7f4ed');
+(function(root) {
+  function embed_document(root) {
+    
+  var docs_json = {"423da9a9-af4a-489c-b731-44c0a93a3ec7":{"roots":{"references":[{"attributes":{"columns":[{"id":"1303","type":"TableColumn"},{"id":"1304","type":"TableColumn"}],"source":{"id":"1305","type":"ColumnDataSource"},"view":{"id":"1307","type":"CDSView"}},"id":"1306","type":"DataTable"},{"attributes":{"editor":{"id":"1349","type":"StringEditor"},"field":"modularity_class","formatter":{"id":"1348","type":"StringFormatter"},"title":"modularity_class"},"id":"1304","type":"TableColumn"},{"attributes":{},"id":"1346","type":"StringFormatter"},{"attributes":{},"id":"1348","type":"StringFormatter"},{"attributes":{},"id":"1351","type":"Selection"},{"attributes":{},"id":"1347","type":"StringEditor"},{"attributes":{"source":{"id":"1305","type":"ColumnDataSource"}},"id":"1307","type":"CDSView"},{"attributes":{"callback":null,"data":{"Id":[9610043,9510017,9503124,9510135,9410167,9611050,9601029,9412184,9401139,9602052,9608024,9710046,9910053,9510169,9512077,9501068,9508143,9602043,9703030,9512062],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"modularity_class":[2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2]},"selected":{"id":"1351","type":"Selection"},"selection_policy":{"id":"1350","type":"UnionRenderers"}},"id":"1305","type":"ColumnDataSource"},{"attributes":{},"id":"1350","type":"UnionRenderers"},{"attributes":{"editor":{"id":"1347","type":"StringEditor"},"field":"Id","formatter":{"id":"1346","type":"StringFormatter"},"title":"Id"},"id":"1303","type":"TableColumn"},{"attributes":{},"id":"1349","type":"StringEditor"}],"root_ids":["1306"]},"title":"Bokeh Application","version":"1.0.4"}};
+  var render_items = [{"docid":"423da9a9-af4a-489c-b731-44c0a93a3ec7","roots":{"1306":"d8137a75-fbac-4d9c-a704-776ef829dfa5"}}];
+  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
+
+  }
+  if (root.Bokeh !== undefined) {
+    embed_document(root);
+  } else {
+    var attempts = 0;
+    var timer = setInterval(function(root) {
+      if (root.Bokeh !== undefined) {
+        embed_document(root);
+        clearInterval(timer);
+      }
+      attempts++;
+      if (attempts > 100) {
+        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
+        clearInterval(timer);
+      }
+    }, 10, root)
+  }
+})(window);
+</script>
 </div>
 
 </div>
@@ -14378,449 +14143,34 @@ var element = $('#83c6571c-610a-4c8c-af85-7f0d82120aa4');
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">more_than_one_email</span> <span class="o">=</span>  <span class="p">[</span><span class="kc">True</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">papers</span><span class="o">.</span><span class="n">emails</span><span class="p">]</span>
-<span class="n">papers</span><span class="p">[</span><span class="n">more_than_one_email</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Join the original network with our most important nodes with modularity</span>
+<span class="n">hepth_df_with_modularity</span> <span class="o">=</span> <span class="n">hepth_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">nodes_with_modularity_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;Id&#39;</span><span class="p">)</span>
+
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_from&#39;</span><span class="p">]</span>
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">hepth_df_with_modularity</span> <span class="o">=</span> <span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">nodes_with_modularity_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;Id&#39;</span><span class="p">)</span>
+
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_from&#39;</span><span class="p">,</span> <span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_to&#39;</span><span class="p">]</span>
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Id&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[15]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>emails</th>
-      <th>description</th>
-      <th>date</th>
-      <th>from</th>
-      <th>title</th>
-      <th>authors</th>
-      <th>comments</th>
-      <th>subj-class</th>
-      <th>journal-ref</th>
-      <th>out_degree</th>
-      <th>in_degree</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>207008</th>
-      <td>[]</td>
-      <td>Effective string field equations with zero-con...</td>
-      <td>Mon, 1 Jul 2002 11:31:25 GMT   (1kb)</td>
-      <td>Suayyip Salim Ozkurt &lt;salim @mail.dumlupinar.e...</td>
-      <td>On the effects of the vanishing of the non-met...</td>
-      <td>Suayyip Salim Ozkurt</td>
-      <td>2 pages</td>
-      <td>None</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>9201014</th>
-      <td>[]</td>
-      <td>We generalize the known method for explicit co...</td>
-      <td>Thu, 09 Jan 92 12:02:40 SET   (17kb)</td>
-      <td>BERGLUN@CERNVM</td>
-      <td>A Generalized Construction of Mirror Manifolds</td>
-      <td>P. Berglund and T. H\"ubsch</td>
-      <td>16 pages</td>
-      <td>None</td>
-      <td>Nucl.Phys. B393 (1993) 377-391</td>
-      <td>26.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9203036</th>
-      <td>[]</td>
-      <td>A method for quantizing the bidimensional N=2 ...</td>
-      <td>Fri, 13 Mar 92 10:34 arg   (10kb)</td>
-      <td>ALDAZABAL@arib51</td>
-      <td>On the quantization of the N=2 supersymmetric ...</td>
-      <td>G.Aldazabal, J.M.Maldacena</td>
-      <td>16 pages</td>
-      <td>None</td>
-      <td>Int.J.Mod.Phys. A8 (1993) 3359-3370</td>
-      <td>3.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9205104</th>
-      <td>[]</td>
-      <td>We re-examine the geometry and algebraic struc...</td>
-      <td>THU, 28 MAY 1992 20:40 EXP   (10kb)</td>
-      <td>J.S.Park &lt;PJESENAT@krysucc1&gt;</td>
-      <td>Universal Bundle, Generalized Russian Formula ...</td>
-      <td>Jae-Suk Park</td>
-      <td>16 pages, harvmac TeX, ESENAT-92-07, (TeXnical...</td>
-      <td>None</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>9210151</th>
-      <td>[]</td>
-      <td>We introduce the covariant forms for the non-A...</td>
-      <td>THU, 29 OCT 1992 17:18 EXP   (9kb)</td>
-      <td>J.-S.Park &lt;PJESENAT@KRYSUCC1&gt;</td>
-      <td>Zero-Modes, Covariant Anomaly Counterparts and...</td>
-      <td>Jae-Suk Park</td>
-      <td>10 pages, ESENAT-92-08</td>
-      <td>None</td>
-      <td>None</td>
-      <td>1.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9304092</th>
-      <td>[]</td>
-      <td>We consider a self-interacting scalar field th...</td>
-      <td>21 Apr 1993 11:24:39 +0000   (15kb)</td>
-      <td>"Guido Cognola, Dipartimento di Fisica, 38050 ...</td>
-      <td>Effective Lagrangian for self-interacting scal...</td>
-      <td>Klaus Kirsten, Guido Cognola and Luciano Vanzo</td>
-      <td>14 pages, LaTex, UTF 293</td>
-      <td>None</td>
-      <td>Phys.Rev. D48 (1993) 2813-2822</td>
-      <td>10.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9306091</th>
-      <td>[]</td>
-      <td>We rewrite the action for $QCD_2$ in the light...</td>
-      <td>18 Jun 1993 17:21:52 +0200   (9kb)</td>
-      <td>"Igor Pesando ph +45-31424284-211;fax +45-3142...</td>
-      <td>The Master Field of QCD$_2$ and the 'T Hooft E...</td>
-      <td>M. Cavicchi, P. Di Vecchia and I. Pesando</td>
-      <td>7 pages, Latex, NORDITA-93-41</td>
-      <td>None</td>
-      <td>Mod.Phys.Lett. A8 (1993) 2427-2434; Erratum-ib...</td>
-      <td>10.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>9306160</th>
-      <td>[]</td>
-      <td>We introduce the notion of ortho-symplectic su...</td>
-      <td>Wed, 30 Jun 1993 10:12 EST   (9kb)</td>
-      <td>"Judy Mack, University of Rochester, 716-275-4...</td>
-      <td>Super Triple Systems and Applications to Para-...</td>
-      <td>S. Okubo</td>
-      <td>14 pages, Preprint No. UR-1312, ER-40685-762</td>
-      <td>None</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9308106</th>
-      <td>[]</td>
-      <td>Free and self-interacting scalar fields in the...</td>
-      <td>23 Aug 1993 14:38:16 +0000   (18kb)</td>
-      <td>"Guido Cognola, Dipartimento di Fisica, 38050 ...</td>
-      <td>Free and self-interacting scalar fields in the...</td>
-      <td>Guido Cognola, Klaus Kirsten and Luciano Vanzo</td>
-      <td>20 Pages, RevTex, UTF300</td>
-      <td>None</td>
-      <td>Phys.Rev. D49 (1994) 1029-1038</td>
-      <td>31.0</td>
-      <td>4.0</td>
-    </tr>
-    <tr>
-      <th>9310001</th>
-      <td>[]</td>
-      <td>Using differential and integral calculi on the...</td>
-      <td>01 Oct 1993 11:23:22 +0300   (11kb)</td>
-      <td>"MASUD CHAICHIAN, TEL. 358-0-1918441; FAX 358-...</td>
-      <td>Q-Deformed Path Integral</td>
-      <td>M. Chaichian and A.P. Demichev</td>
-      <td>14 pages, Latex, HU-SEFT R 1993-10</td>
-      <td>None</td>
-      <td>Phys.Lett. B320 (1994) 273-280</td>
-      <td>2.0</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>9310141</th>
-      <td>[]</td>
-      <td>The finite temperature one-loop effective pote...</td>
-      <td>21 Oct 1993 17:35:04 +0000   (11kb)</td>
-      <td>"Guido Cognola, Dipartimento di Fisica, 38050 ...</td>
-      <td>Finite temperature effective potential on hype...</td>
-      <td>Guido Cognola, Klaus Kirsten, Luciano Vanzo an...</td>
-      <td>10 pages LaTex, UTF301</td>
-      <td>None</td>
-      <td>Phys.Rev. D49 (1994) 5307-5312</td>
-      <td>2.0</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>9311061</th>
-      <td>[]</td>
-      <td>We construct quantum deformation of Poincar\'e...</td>
-      <td>10 Nov 1993 16:34:46 +0200   (12kb)</td>
-      <td>"MASUD CHAICHIAN, TEL. 358-0-1918441; FAX 358-...</td>
-      <td>Large Quantum Poincare Subgroup of q-Conformal...</td>
-      <td>M. Chaichian and A.P.Demichev</td>
-      <td>12 pages, Latex, HU-SEFT R 1993-15</td>
-      <td>None</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9312044</th>
-      <td>[]</td>
-      <td>We analize the algebraic structure of consiste...</td>
-      <td>Mon, 6 Dec 1993 15:00:31 +0100 (WET)   (36kb)</td>
-      <td>"IPDGR4::GRIGUOLO"@padova.infn.it</td>
-      <td>Covariant Anomalies and Functional Determinants</td>
-      <td>Luca Griguolo</td>
-      <td>55 pages</td>
-      <td>None</td>
-      <td>Fortschr. Phys. 42 (1994) 611-662</td>
-      <td>1.0</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9403079</th>
-      <td>[]</td>
-      <td>Geodesic completness and self-adjointness impl...</td>
-      <td>Tue, 15 Mar 1994 7:55:37 -0500 (EST)   (8kb)</td>
-      <td>"38670::MATONE"@BNLA00.AGS.BNL.GOV</td>
-      <td>The Higgs model for anyons and Liouville actio...</td>
-      <td>M. Matone</td>
-      <td>DFPD/93/TH/69, LaTex</td>
-      <td>None</td>
-      <td>Mod.Phys.Lett. A9 (1994) 1673-1680</td>
-      <td>NaN</td>
-      <td>3.0</td>
-    </tr>
-    <tr>
-      <th>9403153</th>
-      <td>[]</td>
-      <td>In this paper, from the $q$-gauge covariant co...</td>
-      <td>Fri, 25 Mar 1994 15:05:42 -0500 (EST)   (17kb)</td>
-      <td>mazq &lt;@SERV02.SLAC.STANFORD.EDU:mazq@BEPC2&gt;</td>
-      <td>q$-Deformed Chern Class, Chern-Simons and Cocy...</td>
-      <td>Bo-Yu Hou (Institute of Modern Physics, Northw...</td>
-      <td>None</td>
-      <td>None</td>
-      <td>J.Phys. A28 (1995) 543-558</td>
-      <td>1.0</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>9404111</th>
-      <td>[]</td>
-      <td>In this note, a new class of representations o...</td>
-      <td>Tue, 19 Apr 1994 16:48:45 -0500 (CDT)   (5kb)</td>
-      <td>mazq &lt;@SERV02.SLAC.STANFORD.EDU:mazq@BEPC3&gt;</td>
-      <td>$N$-Dimensional Representations of the Braid G...</td>
-      <td>Dian-Min Tong, Shan-De Yang (Jilin University,...</td>
-      <td>None</td>
-      <td>High Energy Physics - Theory; Quantum Algebra</td>
-      <td>None</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9405022</th>
-      <td>[]</td>
-      <td>Using the differential calculus on discrete gr...</td>
-      <td>Wed, 04 May 1994 15:04:47 -0400 (EDT)   (6kb)</td>
-      <td>kewu &lt;@SERV02.SLAC.STANFORD.EDU:kewu@BEPC2&gt;</td>
-      <td>Gravity and Discrete Symmetry</td>
-      <td>Bin Chen, Takesi Saito and Ke Wu</td>
-      <td>11</td>
-      <td>None</td>
-      <td>Prog.Theor.Phys. 92 (1994) 881-888</td>
-      <td>4.0</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>9406154</th>
-      <td>[]</td>
-      <td>We present a general method to bosonize system...</td>
-      <td>Thu, 23 Jun 1994 6:22:52 -0400 (EDT)   (35kb)</td>
-      <td>"38670::MARCHETTI"@BNLA00.AGS.BNL.GOV</td>
-      <td>Bosonization of Fermi Systems in Arbitrary Dim...</td>
-      <td>J. Froehlich, R. Goetschmann and P.A. Marchetti</td>
-      <td>51 pages, DFPD 94/TH/36, TeX file</td>
-      <td>None</td>
-      <td>J.Phys. A28 (1995) 1169-1204</td>
-      <td>16.0</td>
-      <td>2.0</td>
-    </tr>
-    <tr>
-      <th>9412080</th>
-      <td>[]</td>
-      <td>A matrix model to describe dynamical loops on ...</td>
-      <td>Fri, 9 Dec 1994 11:13:21 +0100 (WET)   (14kb)</td>
-      <td>"MITE35::CICUTA"@mi.infn.it</td>
-      <td>A Matrix Model for Random Surfaces with Dynami...</td>
-      <td>G.M.Cicuta, L.Molinari, E.Montaldi, S.Stramaglia</td>
-      <td>20 pages in Plain Tex, 4 figures not enclosed</td>
-      <td>None</td>
-      <td>J.Phys. A29 (1996) 3769-3785</td>
-      <td>1.0</td>
-      <td>5.0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Enrich-Paper-citations">Enrich Paper citations<a class="anchor-link" href="#Enrich-Paper-citations">&#182;</a></h1>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">citations</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">papers</span><span class="p">[[</span><span class="s1">&#39;emails&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">)</span>
-<span class="n">citations</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;emails_from&#39;</span><span class="p">]</span>
-
-<span class="n">citations</span> <span class="o">=</span> <span class="n">citations</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">papers</span><span class="p">[[</span><span class="s1">&#39;emails&#39;</span><span class="p">]],</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">)</span>
-<span class="n">citations</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;emails_from&#39;</span><span class="p">,</span> <span class="s1">&#39;emails_to&#39;</span><span class="p">]</span>
-
-<span class="n">explode_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;emails_from&#39;</span><span class="p">,</span> <span class="s1">&#39;emails_to&#39;</span><span class="p">]</span>
-
-<span class="k">for</span> <span class="n">ec</span> <span class="ow">in</span> <span class="n">explode_columns</span><span class="p">:</span>
-    <span class="n">citations</span> <span class="o">=</span> <span class="n">explode</span><span class="p">(</span><span class="n">citations</span><span class="p">,</span> <span class="p">[</span><span class="n">ec</span><span class="p">])</span>
-
-<span class="n">citations</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">citations</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Remove all edges that have a node that was not found in nodes_with_modularity_df</span>
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">hepth_df_with_modularity</span> <span class="o">=</span> <span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/home/ajmc/.virtualenvs/dmsn-graphs/lib/python3.6/site-packages/pandas/core/frame.py:6692: FutureWarning: Sorting because non-concatenation axis is not aligned. A future version
-of pandas will change to not sort by default.
-
-To accept the future behavior, pass &#39;sort=False&#39;.
-
-To retain the current behavior and silence the warning, pass &#39;sort=True&#39;.
-
-  sort=sort)
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="08553438-a5b2-4900-aa91-f5fac51e9001" data-root-id="1476"></div>
-
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="f043954f-1458-4901-a294-d5cc08c30f4c"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#f043954f-1458-4901-a294-d5cc08c30f4c');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"2edfdec1-2915-4a08-97e9-45ba47b60a1c":{"roots":{"references":[{"attributes":{"columns":[{"id":"1471","type":"TableColumn"},{"id":"1472","type":"TableColumn"},{"id":"1473","type":"TableColumn"},{"id":"1474","type":"TableColumn"}],"source":{"id":"1475","type":"ColumnDataSource"},"view":{"id":"1477","type":"CDSView"}},"id":"1476","type":"DataTable"},{"attributes":{},"id":"1521","type":"StringEditor"},{"attributes":{},"id":"1522","type":"StringFormatter"},{"attributes":{"editor":{"id":"1523","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1522","type":"StringFormatter"},"title":"ToNodeId"},"id":"1472","type":"TableColumn"},{"attributes":{},"id":"1526","type":"StringFormatter"},{"attributes":{},"id":"1529","type":"Selection"},{"attributes":{"source":{"id":"1475","type":"ColumnDataSource"}},"id":"1477","type":"CDSView"},{"attributes":{"editor":{"id":"1521","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1520","type":"StringFormatter"},"title":"FromNodeId"},"id":"1471","type":"TableColumn"},{"attributes":{},"id":"1523","type":"StringEditor"},{"attributes":{"callback":null,"data":{"FromNodeId":[1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001],"ToNodeId":[9304045,9308122,9309097,9311042,9401139,9404151,9407087,9408099,9501030,9503124,9504090,9504145,9505025,9505054,9505105,9505162,9506048,9506112,9506144,9507050],"emails_from":["psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu"],"emails_to":["derrick@bolvan.ph.utexas.edu","theisen@crnvma.cern.ch","aspin@guinness.ias.edu","dmrrsn@math.duke.edu","giveon@vms.huji.ac.il","psa@physics.rutgers.edu","seiberg@physics.rutgers.edu","seiberg@physics.rutgers.edu","duff@fermi.tamu.edu","witten@sns.ias.edu","andy@denali.physics.ucsb.edu","drm@math.duke.edu","drm@math.duke.edu","sc@itp.ucsb.edu","vafa@string.harvard.edu","andy@denali.physics.ucsb.edu","joep@avalon.itp.ucsb.edu","mayr@surya11.cern.ch","ceresole@polito.it","witten@sns.ias.edu"],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]},"selected":{"id":"1529","type":"Selection"},"selection_policy":{"id":"1528","type":"UnionRenderers"}},"id":"1475","type":"ColumnDataSource"},{"attributes":{},"id":"1525","type":"StringEditor"},{"attributes":{},"id":"1527","type":"StringEditor"},{"attributes":{},"id":"1524","type":"StringFormatter"},{"attributes":{"editor":{"id":"1527","type":"StringEditor"},"field":"emails_to","formatter":{"id":"1526","type":"StringFormatter"},"title":"emails_to"},"id":"1474","type":"TableColumn"},{"attributes":{"editor":{"id":"1525","type":"StringEditor"},"field":"emails_from","formatter":{"id":"1524","type":"StringFormatter"},"title":"emails_from"},"id":"1473","type":"TableColumn"},{"attributes":{},"id":"1528","type":"UnionRenderers"},{"attributes":{},"id":"1520","type":"StringFormatter"}],"root_ids":["1476"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"2edfdec1-2915-4a08-97e9-45ba47b60a1c","roots":{"1476":"08553438-a5b2-4900-aa91-f5fac51e9001"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14830,10 +14180,8 @@ var element = $('#f043954f-1458-4901-a294-d5cc08c30f4c');
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">citations</span><span class="p">[</span><span class="s2">&quot;domain_from&quot;</span><span class="p">],</span> <span class="n">citations</span><span class="p">[</span><span class="s2">&quot;tld_from&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">citations</span><span class="p">[</span><span class="s2">&quot;emails_from&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">domain_and_tld_from_email</span><span class="p">))</span>
-<span class="n">citations</span><span class="p">[</span><span class="s2">&quot;domain_to&quot;</span><span class="p">],</span> <span class="n">citations</span><span class="p">[</span><span class="s2">&quot;tld_to&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">citations</span><span class="p">[</span><span class="s2">&quot;emails_to&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">domain_and_tld_from_email</span><span class="p">))</span>
-
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">citations</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">hepth_df_with_modularity</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14857,7 +14205,7 @@ var element = $('#f043954f-1458-4901-a294-d5cc08c30f4c');
 
 
 
-  <div class="bk-root" id="5dadbfdb-64ea-496e-a2ac-7ccde61f24ac" data-root-id="1589"></div>
+  <div class="bk-root" id="16e5a827-a499-45c0-b0d2-6becce5027df" data-root-id="1387"></div>
 
 </div>
 
@@ -14871,15 +14219,15 @@ var element = $('#f043954f-1458-4901-a294-d5cc08c30f4c');
 
 
 
-<div id="6255dbd4-f293-42d1-bce0-bcbf74a59daa"></div>
+<div id="02b74152-0b7c-4ff3-b645-5ff25a0d0e16"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#6255dbd4-f293-42d1-bce0-bcbf74a59daa');
+var element = $('#02b74152-0b7c-4ff3-b645-5ff25a0d0e16');
 (function(root) {
   function embed_document(root) {
     
-  var docs_json = {"c37da1b1-3810-4060-bba7-92cbcdd40425":{"roots":{"references":[{"attributes":{"columns":[{"id":"1580","type":"TableColumn"},{"id":"1581","type":"TableColumn"},{"id":"1582","type":"TableColumn"},{"id":"1583","type":"TableColumn"},{"id":"1584","type":"TableColumn"},{"id":"1585","type":"TableColumn"},{"id":"1586","type":"TableColumn"},{"id":"1587","type":"TableColumn"}],"source":{"id":"1588","type":"ColumnDataSource"},"view":{"id":"1590","type":"CDSView"}},"id":"1589","type":"DataTable"},{"attributes":{},"id":"1654","type":"StringEditor"},{"attributes":{"editor":{"id":"1658","type":"StringEditor"},"field":"tld_to","formatter":{"id":"1657","type":"StringFormatter"},"title":"tld_to"},"id":"1587","type":"TableColumn"},{"attributes":{},"id":"1655","type":"StringFormatter"},{"attributes":{"callback":null,"data":{"FromNodeId":[1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001,1001],"ToNodeId":[9304045,9308122,9309097,9311042,9401139,9404151,9407087,9408099,9501030,9503124,9504090,9504145,9505025,9505054,9505105,9505162,9506048,9506112,9506144,9507050],"domain_from":["duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu","duke.edu"],"domain_to":["utexas.edu","cern.ch","ias.edu","duke.edu","huji.ac.il","rutgers.edu","rutgers.edu","rutgers.edu","tamu.edu","ias.edu","ucsb.edu","duke.edu","duke.edu","ucsb.edu","harvard.edu","ucsb.edu","ucsb.edu","cern.ch","polito.it","ias.edu"],"emails_from":["psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu","psa@math.duke.edu"],"emails_to":["derrick@bolvan.ph.utexas.edu","theisen@crnvma.cern.ch","aspin@guinness.ias.edu","dmrrsn@math.duke.edu","giveon@vms.huji.ac.il","psa@physics.rutgers.edu","seiberg@physics.rutgers.edu","seiberg@physics.rutgers.edu","duff@fermi.tamu.edu","witten@sns.ias.edu","andy@denali.physics.ucsb.edu","drm@math.duke.edu","drm@math.duke.edu","sc@itp.ucsb.edu","vafa@string.harvard.edu","andy@denali.physics.ucsb.edu","joep@avalon.itp.ucsb.edu","mayr@surya11.cern.ch","ceresole@polito.it","witten@sns.ias.edu"],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],"tld_from":["edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu"],"tld_to":["edu","ch","edu","edu","il","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","edu","ch","it","edu"]},"selected":{"id":"1660","type":"Selection"},"selection_policy":{"id":"1659","type":"UnionRenderers"}},"id":"1588","type":"ColumnDataSource"},{"attributes":{},"id":"1656","type":"StringEditor"},{"attributes":{},"id":"1657","type":"StringFormatter"},{"attributes":{"source":{"id":"1588","type":"ColumnDataSource"}},"id":"1590","type":"CDSView"},{"attributes":{},"id":"1646","type":"StringEditor"},{"attributes":{},"id":"1658","type":"StringEditor"},{"attributes":{},"id":"1659","type":"UnionRenderers"},{"attributes":{},"id":"1645","type":"StringFormatter"},{"attributes":{},"id":"1660","type":"Selection"},{"attributes":{},"id":"1644","type":"StringEditor"},{"attributes":{},"id":"1643","type":"StringFormatter"},{"attributes":{},"id":"1647","type":"StringFormatter"},{"attributes":{"editor":{"id":"1648","type":"StringEditor"},"field":"emails_from","formatter":{"id":"1647","type":"StringFormatter"},"title":"emails_from"},"id":"1582","type":"TableColumn"},{"attributes":{},"id":"1648","type":"StringEditor"},{"attributes":{},"id":"1649","type":"StringFormatter"},{"attributes":{"editor":{"id":"1644","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1643","type":"StringFormatter"},"title":"FromNodeId"},"id":"1580","type":"TableColumn"},{"attributes":{"editor":{"id":"1646","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1645","type":"StringFormatter"},"title":"ToNodeId"},"id":"1581","type":"TableColumn"},{"attributes":{},"id":"1650","type":"StringEditor"},{"attributes":{"editor":{"id":"1650","type":"StringEditor"},"field":"emails_to","formatter":{"id":"1649","type":"StringFormatter"},"title":"emails_to"},"id":"1583","type":"TableColumn"},{"attributes":{},"id":"1651","type":"StringFormatter"},{"attributes":{"editor":{"id":"1652","type":"StringEditor"},"field":"domain_from","formatter":{"id":"1651","type":"StringFormatter"},"title":"domain_from"},"id":"1584","type":"TableColumn"},{"attributes":{},"id":"1652","type":"StringEditor"},{"attributes":{"editor":{"id":"1654","type":"StringEditor"},"field":"tld_from","formatter":{"id":"1653","type":"StringFormatter"},"title":"tld_from"},"id":"1585","type":"TableColumn"},{"attributes":{},"id":"1653","type":"StringFormatter"},{"attributes":{"editor":{"id":"1656","type":"StringEditor"},"field":"domain_to","formatter":{"id":"1655","type":"StringFormatter"},"title":"domain_to"},"id":"1586","type":"TableColumn"}],"root_ids":["1589"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"c37da1b1-3810-4060-bba7-92cbcdd40425","roots":{"1589":"5dadbfdb-64ea-496e-a2ac-7ccde61f24ac"}}];
+  var docs_json = {"7216d764-3760-443e-a077-8f27ea115655":{"roots":{"references":[{"attributes":{"columns":[{"id":"1382","type":"TableColumn"},{"id":"1383","type":"TableColumn"},{"id":"1384","type":"TableColumn"},{"id":"1385","type":"TableColumn"}],"source":{"id":"1386","type":"ColumnDataSource"},"view":{"id":"1388","type":"CDSView"}},"id":"1387","type":"DataTable"},{"attributes":{},"id":"1441","type":"UnionRenderers"},{"attributes":{"editor":{"id":"1436","type":"StringEditor"},"field":"ToNodeId","formatter":{"id":"1435","type":"StringFormatter"},"title":"ToNodeId"},"id":"1383","type":"TableColumn"},{"attributes":{},"id":"1438","type":"StringEditor"},{"attributes":{},"id":"1435","type":"StringFormatter"},{"attributes":{"source":{"id":"1386","type":"ColumnDataSource"}},"id":"1388","type":"CDSView"},{"attributes":{},"id":"1436","type":"StringEditor"},{"attributes":{},"id":"1439","type":"StringFormatter"},{"attributes":{},"id":"1434","type":"StringEditor"},{"attributes":{"editor":{"id":"1434","type":"StringEditor"},"field":"FromNodeId","formatter":{"id":"1433","type":"StringFormatter"},"title":"FromNodeId"},"id":"1382","type":"TableColumn"},{"attributes":{},"id":"1437","type":"StringFormatter"},{"attributes":{"editor":{"id":"1438","type":"StringEditor"},"field":"modularity_from","formatter":{"id":"1437","type":"StringFormatter"},"title":"modularity_from"},"id":"1384","type":"TableColumn"},{"attributes":{},"id":"1440","type":"StringEditor"},{"attributes":{},"id":"1433","type":"StringFormatter"},{"attributes":{},"id":"1442","type":"Selection"},{"attributes":{"editor":{"id":"1440","type":"StringEditor"},"field":"modularity_to","formatter":{"id":"1439","type":"StringFormatter"},"title":"modularity_to"},"id":"1385","type":"TableColumn"},{"attributes":{"callback":null,"data":{"FromNodeId":[9505105,9506112,9508155,9601108,9609239,9706110,9705131,9710046,9610162,9812061,9803072,9610251,9601036,9611184,9412236,9807124,9610105,9507115,7195,9506110],"ToNodeId":[9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122,9308122],"index":[17,18,19,20,22,27,28,31,32,34,37,38,39,41,46,55,61,62,72,73],"modularity_from":[54,54,54,54,37,37,54,2,54,54,54,54,54,54,37,54,54,54,54,54],"modularity_to":[54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54,54]},"selected":{"id":"1442","type":"Selection"},"selection_policy":{"id":"1441","type":"UnionRenderers"}},"id":"1386","type":"ColumnDataSource"}],"root_ids":["1387"]},"title":"Bokeh Application","version":"1.0.4"}};
+  var render_items = [{"docid":"7216d764-3760-443e-a077-8f27ea115655","roots":{"1387":"16e5a827-a499-45c0-b0d2-6becce5027df"}}];
   root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
 
   }
@@ -14905,242 +14253,28 @@ var element = $('#6255dbd4-f293-42d1-bce0-bcbf74a59daa');
 
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="TLD-Aggregation">TLD Aggregation<a class="anchor-link" href="#TLD-Aggregation">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># pd.Series([item for sublist in papers.tlds for item in sublist])</span>
-
-<span class="c1"># Flatten tlds</span>
-<span class="n">tld_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">citations</span><span class="o">.</span><span class="n">tld_from</span><span class="p">,</span> <span class="n">citations</span><span class="o">.</span><span class="n">tld_to</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
-
-<span class="c1"># Count different values</span>
-<span class="n">tld_df</span> <span class="o">=</span> <span class="n">tld_series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;tld&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-
-<span class="c1"># Add description column</span>
-<span class="n">tld_df</span><span class="p">[</span><span class="s1">&#39;tlds_description&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tld_df</span><span class="p">[</span><span class="s1">&#39;tld&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tlds_info</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tlds_info</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">tld_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
 <div class="output_area">
 
     <div class="prompt"></div>
 
 
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="64731b9a-d93c-4500-90b9-c9d5a0ab45ac" data-root-id="1755"></div>
-
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(32129, 4)
+</pre>
 </div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="83c19065-abb4-4647-82f3-f5bd83554763"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#83c19065-abb4-4647-82f3-f5bd83554763');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"bf7c5a6a-bab8-4d74-a9af-bae545fa9995":{"roots":{"references":[{"attributes":{"columns":[{"id":"1751","type":"TableColumn"},{"id":"1752","type":"TableColumn"},{"id":"1753","type":"TableColumn"}],"source":{"id":"1754","type":"ColumnDataSource"},"view":{"id":"1756","type":"CDSView"}},"id":"1755","type":"DataTable"},{"attributes":{},"id":"1829","type":"StringFormatter"},{"attributes":{},"id":"1834","type":"Selection"},{"attributes":{"callback":null,"data":{"count":[275167,58608,47076,39399,39214,38381,24071,16554,15245,14166,13909,13788,11564,10670,10485,8757,7865,7472,7237,5231],"index":[25,71,44,22,12,42,30,39,46,28,11,62,54,32,9,63,6,38,23,67],"tld":["edu","uk","jp","de","ch","it","fr","in","kr","es","ca","ru","nl","gov","br","se","be","il","dk","su"],"tlds_description":["Educational establishments","United Kingdom (United Kingdom of Great Britain and Northern Ireland)","Japan","Germany (Federal Republic of)","Switzerland (Swiss Confederation)","Italy (Italian Republic)","France (French Republic)","India (Republic of)","Korea (Republic of) [South Korea]","Spain (Kingdom of)","Canada","Russia (Russian Federation)","Netherlands","US government","Brazil (Federative Republic of)","Sweden (Kingdom of)","Belgium (Kingdom of)","Israel (State of)","Denmark (Kingdom of)","Soviet Union (Union of Soviet Socialist Republics)"]},"selected":{"id":"1834","type":"Selection"},"selection_policy":{"id":"1833","type":"UnionRenderers"}},"id":"1754","type":"ColumnDataSource"},{"attributes":{"editor":{"id":"1832","type":"StringEditor"},"field":"tlds_description","formatter":{"id":"1831","type":"StringFormatter"},"title":"tlds_description"},"id":"1753","type":"TableColumn"},{"attributes":{},"id":"1827","type":"StringFormatter"},{"attributes":{},"id":"1831","type":"StringFormatter"},{"attributes":{},"id":"1828","type":"StringEditor"},{"attributes":{"editor":{"id":"1828","type":"StringEditor"},"field":"tld","formatter":{"id":"1827","type":"StringFormatter"},"title":"tld"},"id":"1751","type":"TableColumn"},{"attributes":{},"id":"1833","type":"UnionRenderers"},{"attributes":{},"id":"1832","type":"StringEditor"},{"attributes":{"editor":{"id":"1830","type":"StringEditor"},"field":"count","formatter":{"id":"1829","type":"StringFormatter"},"title":"count"},"id":"1752","type":"TableColumn"},{"attributes":{"source":{"id":"1754","type":"ColumnDataSource"}},"id":"1756","type":"CDSView"},{"attributes":{},"id":"1830","type":"StringEditor"}],"root_ids":["1755"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"bf7c5a6a-bab8-4d74-a9af-bae545fa9995","roots":{"1755":"64731b9a-d93c-4500-90b9-c9d5a0ab45ac"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
 </div>
 
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Domain-Aggregation-a.k.a.-most-influential-institutions-/-labs">Domain Aggregation <em>a.k.a. most influential institutions / labs</em><a class="anchor-link" href="#Domain-Aggregation-a.k.a.-most-influential-institutions-/-labs">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#pd.Series([item for sublist in papers.domains for item in sublist])</span>
-
-<span class="c1"># Flatten tlds</span>
-<span class="n">domain_series</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">citations</span><span class="o">.</span><span class="n">domain_from</span><span class="p">,</span> <span class="n">citations</span><span class="o">.</span><span class="n">domain_to</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
-
-<span class="c1"># Count different values</span>
-<span class="n">domain_df</span> <span class="o">=</span> <span class="n">domain_series</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s1">&#39;domain&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">)</span>
-
-<span class="c1"># Sorting by count</span>
-<span class="n">display_df_with_bokeh</span><span class="p">(</span><span class="n">domain_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-
-
-
-
-
-
-  <div class="bk-root" id="df402d64-b5d3-4204-8403-3d5f95bb0b78" data-root-id="1878"></div>
-
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-
-<div id="0cfe250b-d282-4754-9adb-768a7c71fc26"></div>
-<div class="output_subarea output_javascript ">
-<script type="text/javascript">
-var element = $('#0cfe250b-d282-4754-9adb-768a7c71fc26');
-(function(root) {
-  function embed_document(root) {
-    
-  var docs_json = {"c7a01dc4-e5fc-4f3f-82f5-e6705c829489":{"roots":{"references":[{"attributes":{"columns":[{"id":"1875","type":"TableColumn"},{"id":"1876","type":"TableColumn"}],"source":{"id":"1877","type":"ColumnDataSource"},"view":{"id":"1879","type":"CDSView"}},"id":"1878","type":"DataTable"},{"attributes":{},"id":"1963","type":"Selection"},{"attributes":{},"id":"1962","type":"UnionRenderers"},{"attributes":{"callback":null,"data":{"count":[34504,28830,27689,25897,24112,23308,22740,17095,14941,14903,13058,10836,9976,9426,9315,8303,8008,7933,7803,6889],"domain":["cern.ch","ias.edu","princeton.edu","rutgers.edu","harvard.edu","ucsb.edu","infn.it","cam.ac.uk","stanford.edu","mit.edu","kyoto-u.ac.jp","uchicago.edu","u-tokyo.ac.jp","caltech.edu","hu-berlin.de","tamu.edu","ernet.in","res.in","ic.ac.uk","upenn.edu"],"index":[77,244,506,541,213,715,270,60,599,406,352,702,676,59,230,619,161,526,252,882]},"selected":{"id":"1963","type":"Selection"},"selection_policy":{"id":"1962","type":"UnionRenderers"}},"id":"1877","type":"ColumnDataSource"},{"attributes":{"source":{"id":"1877","type":"ColumnDataSource"}},"id":"1879","type":"CDSView"},{"attributes":{"editor":{"id":"1961","type":"StringEditor"},"field":"count","formatter":{"id":"1960","type":"StringFormatter"},"title":"count"},"id":"1876","type":"TableColumn"},{"attributes":{},"id":"1961","type":"StringEditor"},{"attributes":{},"id":"1958","type":"StringFormatter"},{"attributes":{"editor":{"id":"1959","type":"StringEditor"},"field":"domain","formatter":{"id":"1958","type":"StringFormatter"},"title":"domain"},"id":"1875","type":"TableColumn"},{"attributes":{},"id":"1959","type":"StringEditor"},{"attributes":{},"id":"1960","type":"StringFormatter"}],"root_ids":["1878"]},"title":"Bokeh Application","version":"1.0.4"}};
-  var render_items = [{"docid":"c7a01dc4-e5fc-4f3f-82f5-e6705c829489","roots":{"1878":"df402d64-b5d3-4204-8403-3d5f95bb0b78"}}];
-  root.Bokeh.embed.embed_items_notebook(docs_json, render_items);
-
-  }
-  if (root.Bokeh !== undefined) {
-    embed_document(root);
-  } else {
-    var attempts = 0;
-    var timer = setInterval(function(root) {
-      if (root.Bokeh !== undefined) {
-        embed_document(root);
-        clearInterval(timer);
-      }
-      attempts++;
-      if (attempts > 100) {
-        console.log("Bokeh: ERROR: Unable to run BokehJS code because BokehJS library is missing");
-        clearInterval(timer);
-      }
-    }, 10, root)
-  }
-})(window);
-</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Institutions-per-country">Institutions per country<a class="anchor-link" href="#Institutions-per-country">&#182;</a></h2><p><img src="visualisation/screenshots/institutions_per_country.jpeg" alt="alt text" title="Title"></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Save-Dataframes">Save Dataframes<a class="anchor-link" href="#Save-Dataframes">&#182;</a></h2>
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Save dataframes</span>
-<span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/parquet/paper_citations.pq&quot;</span><span class="p">,</span> <span class="n">citations</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/parquet/papers.pq&quot;</span><span class="p">,</span> <span class="n">papers</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/parquet/tld_aggregation.pq&quot;</span><span class="p">,</span> <span class="n">tld_df</span><span class="p">)</span>
-<span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/parquet/domain_aggregation.pq&quot;</span><span class="p">,</span> <span class="n">domain_df</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Save our new reduced network with most important nodes</span>
+<span class="n">hepth_df_with_modularity</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;gephi/reduced_size_network.csv&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>

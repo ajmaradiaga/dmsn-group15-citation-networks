@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import snappy
 
-output_notebook()
+from helper import display_df_with_bokeh
 
 
 # In[2]:
@@ -116,34 +116,9 @@ def explode(df, lst_cols, fill_value=''):
           .loc[:, df.columns]
 
 
-# In[11]:
-
-
-def display_df_with_bokeh(df, columns=None, range_of_records=slice(0,20), include_index=False):
-    
-    table_columns = []
-    
-    if columns is None:
-        columns = {column: column for column in df}
-    
-    if range_of_records is not None:
-        df = df[range_of_records]
-    
-    if include_index:
-        table_columns.append(TableColumn(field=df.index.name, title=df.index.name))
-    
-    for field, title in columns.items():
-        table_columns.append(TableColumn(field=field, title=title))
-    
-    
-    data_table = DataTable(columns=table_columns, source=ColumnDataSource(df)) # bokeh table
-
-    show(data_table)
-
-
 # ## Process paper citations
 
-# In[6]:
+# In[5]:
 
 
 with open(f"{DATASETS_FOLDER}/cit-HepTh.txt", 'r') as f:
@@ -156,13 +131,13 @@ tlds_csv = pd.read_csv(f"{DATASETS_FOLDER}/tlds.csv", header=None, index_col=0, 
 tlds_info = tlds_csv[1]
 
 
+# In[6]:
+
+
+display_df_with_bokeh(df[150:250])
+
+
 # In[7]:
-
-
-display_df_with_bokeh(df)
-
-
-# In[8]:
 
 
 # Paper that cites most papers
@@ -174,14 +149,14 @@ display_df_with_bokeh(out_degree, columns={
 })
 
 
-# In[9]:
+# In[8]:
 
 
 hist, edges = np.histogram(out_degree['ToNodeId'], bins=100, range = [0, 600])
 
 # Create the blank plot
 p = figure(plot_height = 500, plot_width = 900, 
-           title = 'Citations histogram',
+           title = 'Citations histogram (out_degree)',
           x_axis_label = 'Papers cited', 
            y_axis_label = 'Papers')
 
@@ -194,7 +169,7 @@ p.quad(bottom=0, top=hist,
 show(p)
 
 
-# In[14]:
+# In[9]:
 
 
 # Paper cited the most -> Most influential
@@ -206,7 +181,7 @@ display_df_with_bokeh(in_degree, columns={
 })
 
 
-# In[15]:
+# In[10]:
 
 
 hist, edges = np.histogram(in_degree['FromNodeId'], bins=100)
@@ -226,7 +201,7 @@ p.quad(bottom=0, top=hist,
 show(p)
 
 
-# In[16]:
+# In[11]:
 
 
 degrees = pd.concat([in_degree, out_degree], axis=1, sort=False)
@@ -238,7 +213,7 @@ display_df_with_bokeh(degrees, include_index=True)
 
 # # Process paper abstracts
 
-# In[17]:
+# In[12]:
 
 
 abstracts_info = {}
@@ -288,7 +263,7 @@ for dir_name in os.listdir(f"{ABSTRACTS_FOLDER_PATH}"):
         pass 
 
 
-# In[18]:
+# In[13]:
 
 
 papers = pd.DataFrame.from_dict(abstracts_info, orient='index')
@@ -296,13 +271,13 @@ papers = pd.DataFrame.from_dict(abstracts_info, orient='index')
 papers = pd.concat([papers, degrees], axis=1, sort=False)
 
 
-# In[19]:
+# In[14]:
 
 
 papers.head()
 
 
-# In[20]:
+# In[15]:
 
 
 more_than_one_email =  [True if len(e) == 0 else False for e in papers.emails]
@@ -311,7 +286,7 @@ papers[more_than_one_email]
 
 # # Enrich Paper citations
 
-# In[21]:
+# In[16]:
 
 
 citations = df.join(papers[['emails']], on='FromNodeId')
@@ -330,7 +305,7 @@ citations.drop_duplicates(inplace=True)
 display_df_with_bokeh(citations.head(20))
 
 
-# In[22]:
+# In[17]:
 
 
 citations["domain_from"], citations["tld_from"] = zip(*citations["emails_from"].map(domain_and_tld_from_email))
@@ -341,7 +316,7 @@ display_df_with_bokeh(citations)
 
 # ## TLD Aggregation
 
-# In[23]:
+# In[18]:
 
 
 # pd.Series([item for sublist in papers.tlds for item in sublist])
@@ -356,7 +331,7 @@ tld_df = tld_series.value_counts().sort_index().rename_axis('tld').reset_index(n
 tld_df['tlds_description'] = tld_df['tld'].map(lambda x: tlds_info[x] if x in tlds_info else None)
 
 
-# In[24]:
+# In[19]:
 
 
 display_df_with_bokeh(tld_df.sort_values('count', ascending=False))
@@ -364,7 +339,7 @@ display_df_with_bokeh(tld_df.sort_values('count', ascending=False))
 
 # ## Domain Aggregation _a.k.a. most influential institutions / labs_
 
-# In[25]:
+# In[20]:
 
 
 #pd.Series([item for sublist in papers.domains for item in sublist])
