@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 # coding: utf-8
 
 # In[1]:
@@ -7,16 +7,23 @@
 import os
 import re
 
+from bokeh.io import output_file, output_notebook
+from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
+from bokeh.models import ColumnDataSource
+from bokeh.plotting import show
+from bokeh.plotting import figure
 from fastparquet import write
 import numpy as np
 import pandas as pd
 import snappy
 
+output_notebook()
+
 
 # In[2]:
 
 
-get_ipython().system(u'head -n 10 datasets/cit-HepTh.txt')
+get_ipython().system('head -n 10 datasets/cit-HepTh.txt')
 
 
 # ## Initialise variables
@@ -65,7 +72,7 @@ def domain_and_tld_from_email(email):
 
         domain = email.split('@')[1].lower().strip()
 
-        if '.ac.' in domain:
+        if '.ac.' in domain or '.co.' in domain or '.edu.' in domain or '.gov.' in domain or '.com.' in domain:
             domain = ".".join(domain.split('.')[-3:])
         else:
             domain = ".".join(domain.split('.')[-2:])
@@ -109,9 +116,34 @@ def explode(df, lst_cols, fill_value=''):
           .loc[:, df.columns]
 
 
+# In[11]:
+
+
+def display_df_with_bokeh(df, columns=None, range_of_records=slice(0,20), include_index=False):
+    
+    table_columns = []
+    
+    if columns is None:
+        columns = {column: column for column in df}
+    
+    if range_of_records is not None:
+        df = df[range_of_records]
+    
+    if include_index:
+        table_columns.append(TableColumn(field=df.index.name, title=df.index.name))
+    
+    for field, title in columns.items():
+        table_columns.append(TableColumn(field=field, title=title))
+    
+    
+    data_table = DataTable(columns=table_columns, source=ColumnDataSource(df)) # bokeh table
+
+    show(data_table)
+
+
 # ## Process paper citations
 
-# In[5]:
+# In[6]:
 
 
 with open(f"{DATASETS_FOLDER}/cit-HepTh.txt", 'r') as f:
@@ -124,40 +156,89 @@ tlds_csv = pd.read_csv(f"{DATASETS_FOLDER}/tlds.csv", header=None, index_col=0, 
 tlds_info = tlds_csv[1]
 
 
-# In[6]:
-
-
-df[100:200].head(10)
-
-
 # In[7]:
 
 
-# Paper that cites most papers
-out_degree = df.groupby('FromNodeId').count().sort_values('ToNodeId', ascending = False)
-out_degree.head()
+display_df_with_bokeh(df)
 
 
 # In[8]:
 
 
-# Paper cited the most -> Most influential
-in_degree = df.groupby('ToNodeId').count().sort_values('FromNodeId', ascending = False)
-in_degree.head()
+# Paper that cites most papers
+out_degree = df.groupby('FromNodeId').count().sort_values('ToNodeId', ascending = False)
+
+display_df_with_bokeh(out_degree, columns={
+    "FromNodeId": "Paper",
+    "ToNodeId": "Papers cited"
+})
 
 
 # In[9]:
 
 
+hist, edges = np.histogram(out_degree['ToNodeId'], bins=100, range = [0, 600])
+
+# Create the blank plot
+p = figure(plot_height = 500, plot_width = 900, 
+           title = 'Citations histogram',
+          x_axis_label = 'Papers cited', 
+           y_axis_label = 'Papers')
+
+# Add a quad glyph
+p.quad(bottom=0, top=hist, 
+       left=edges[:-1], right=edges[1:],
+       fill_color= 'navy', line_color='white')
+
+# Show the plot
+show(p)
+
+
+# In[14]:
+
+
+# Paper cited the most -> Most influential
+in_degree = df.groupby('ToNodeId').count().sort_values('FromNodeId', ascending = False)
+
+display_df_with_bokeh(in_degree, columns={
+    "ToNodeId": "Paper",
+    "FromNodeId": "Paper citations"
+})
+
+
+# In[15]:
+
+
+hist, edges = np.histogram(in_degree['FromNodeId'], bins=100)
+
+# Create the blank plot
+p = figure(plot_height = 500, plot_width = 900, 
+           title = 'Citations histogram (in_degree)',
+          x_axis_label = 'Paper citations', 
+           y_axis_label = 'Papers')
+
+# Add a quad glyph
+p.quad(bottom=0, top=hist, 
+       left=edges[:-1], right=edges[1:],
+       fill_color= 'navy', line_color='white')
+
+# Show the plot
+show(p)
+
+
+# In[16]:
+
+
 degrees = pd.concat([in_degree, out_degree], axis=1, sort=False)
 degrees.columns = ['out_degree', 'in_degree']
+degrees.index.name = 'paper'
 
-degrees.head()
+display_df_with_bokeh(degrees, include_index=True)
 
 
 # # Process paper abstracts
 
-# In[10]:
+# In[17]:
 
 
 abstracts_info = {}
@@ -207,7 +288,7 @@ for dir_name in os.listdir(f"{ABSTRACTS_FOLDER_PATH}"):
         pass 
 
 
-# In[11]:
+# In[18]:
 
 
 papers = pd.DataFrame.from_dict(abstracts_info, orient='index')
@@ -215,28 +296,22 @@ papers = pd.DataFrame.from_dict(abstracts_info, orient='index')
 papers = pd.concat([papers, degrees], axis=1, sort=False)
 
 
-# In[12]:
+# In[19]:
 
 
-papers.head(30)
+papers.head()
 
 
-# In[13]:
+# In[20]:
 
 
 more_than_one_email =  [True if len(e) == 0 else False for e in papers.emails]
 papers[more_than_one_email]
 
 
-# In[14]:
-
-
-papers.loc[9201014]
-
-
 # # Enrich Paper citations
 
-# In[15]:
+# In[21]:
 
 
 citations = df.join(papers[['emails']], on='FromNodeId')
@@ -252,21 +327,21 @@ for ec in explode_columns:
 
 citations.drop_duplicates(inplace=True)
     
-citations.head()
+display_df_with_bokeh(citations.head(20))
 
 
-# In[16]:
+# In[22]:
 
 
 citations["domain_from"], citations["tld_from"] = zip(*citations["emails_from"].map(domain_and_tld_from_email))
 citations["domain_to"], citations["tld_to"] = zip(*citations["emails_to"].map(domain_and_tld_from_email))
 
-citations.head()
+display_df_with_bokeh(citations)
 
 
 # ## TLD Aggregation
 
-# In[17]:
+# In[23]:
 
 
 # pd.Series([item for sublist in papers.tlds for item in sublist])
@@ -281,15 +356,15 @@ tld_df = tld_series.value_counts().sort_index().rename_axis('tld').reset_index(n
 tld_df['tlds_description'] = tld_df['tld'].map(lambda x: tlds_info[x] if x in tlds_info else None)
 
 
-# In[18]:
+# In[24]:
 
 
-tld_df.sort_values('count', ascending=False).head(10)
+display_df_with_bokeh(tld_df.sort_values('count', ascending=False))
 
 
 # ## Domain Aggregation _a.k.a. most influential institutions / labs_
 
-# In[19]:
+# In[25]:
 
 
 #pd.Series([item for sublist in papers.domains for item in sublist])
@@ -301,12 +376,15 @@ domain_series = pd.concat([citations.domain_from, citations.domain_to], axis=0)
 domain_df = domain_series.value_counts().sort_index().rename_axis('domain').reset_index(name='count')
 
 # Sorting by count
-domain_df.sort_values('count', ascending=False).head(10)
+display_df_with_bokeh(domain_df.sort_values('count', ascending=False))
 
+
+# ## Institutions per country
+# ![alt text](visualisation/screenshots/institutions_per_country.jpeg "Title")
 
 # ## Save Dataframes
 
-# In[20]:
+# In[ ]:
 
 
 # Save dataframes
@@ -314,4 +392,10 @@ write(f"{DATASETS_FOLDER}/parquet/paper_citations.pq", citations)
 write(f"{DATASETS_FOLDER}/parquet/papers.pq", papers)
 write(f"{DATASETS_FOLDER}/parquet/tld_aggregation.pq", tld_df)
 write(f"{DATASETS_FOLDER}/parquet/domain_aggregation.pq", domain_df)
+
+
+# In[ ]:
+
+
+
 
