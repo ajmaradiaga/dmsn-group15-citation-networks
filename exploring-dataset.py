@@ -123,12 +123,21 @@ def explode(df, lst_cols, fill_value=''):
 
 with open(f"{DATASETS_FOLDER}/cit-HepTh.txt", 'r') as f:
     df = pd.read_csv(f,sep='\t',skiprows=(0,1,2))
+
+# Dropping duplicates
+df.drop_duplicates(inplace = True)
     
 # Rename columns
 df.columns = ['FromNodeId', 'ToNodeId']
 
 tlds_csv = pd.read_csv(f"{DATASETS_FOLDER}/tlds.csv", header=None, index_col=0, squeeze=True).to_dict()
 tlds_info = tlds_csv[1]
+
+
+# In[ ]:
+
+
+df.to_csv(f"{DATASETS_FOLDER}/cit-HepTh-nodup.txt", index=False)
 
 
 # In[6]:
@@ -314,15 +323,35 @@ citations["domain_to"], citations["tld_to"] = zip(*citations["emails_to"].map(do
 display_df_with_bokeh(citations)
 
 
+# In[18]:
+
+
+citations.head()
+
+
+# In[19]:
+
+
+# Example of papers with multiple email addresses
+citations[(citations['FromNodeId'] == 9903234) & (citations['ToNodeId'] == 9708001)]
+
+
+# In[20]:
+
+
+# Papers that cite themselves
+citations[(citations['FromNodeId'] == citations['ToNodeId'])]
+
+
 # ## TLD Aggregation
 
-# In[18]:
+# In[21]:
 
 
 # pd.Series([item for sublist in papers.tlds for item in sublist])
 
 # Flatten tlds
-tld_series = pd.concat([citations.tld_from, citations.tld_to], axis=0) 
+tld_series = pd.concat([citations.tld_from], axis=0) 
 
 # Count different values
 tld_df = tld_series.value_counts().sort_index().rename_axis('tld').reset_index(name='count')
@@ -331,27 +360,64 @@ tld_df = tld_series.value_counts().sort_index().rename_axis('tld').reset_index(n
 tld_df['tlds_description'] = tld_df['tld'].map(lambda x: tlds_info[x] if x in tlds_info else None)
 
 
-# In[19]:
+# In[22]:
 
 
 display_df_with_bokeh(tld_df.sort_values('count', ascending=False))
 
 
-# ## Domain Aggregation _a.k.a. most influential institutions / labs_
+# ## Papers in network by institution
 
-# In[20]:
+# In[23]:
 
 
-#pd.Series([item for sublist in papers.domains for item in sublist])
+all_from = citations[['FromNodeId','domain_from']]
+all_from.columns = ['Paper', 'domain']
 
-# Flatten tlds
-domain_series = pd.concat([citations.domain_from, citations.domain_to], axis=0) 
+all_to = citations[['ToNodeId','domain_to']]
+all_to.columns = ['Paper', 'domain']
+
+# Join all nodes and remove duplicates.
+# As a paper can be as a FromNode and ToNode, we will remove duplicates
+all_nodes = all_from.append(all_to).drop_duplicates()
+
+print(all_nodes.shape)
+
+# Count by domain
+domains_contributions = all_nodes.domain.value_counts().sort_index().rename_axis('domain').reset_index(name='count')
+
+# Sorting by count
+display_df_with_bokeh(domains_contributions.sort_values('count', ascending=False))
+
+
+# ## Most cited institution / lab
+
+# In[24]:
+
+
+# Only taking in consideration the domain of the ToNode
+domain_series = pd.concat([citations.domain_to], axis=0) 
 
 # Count different values
 domain_df = domain_series.value_counts().sort_index().rename_axis('domain').reset_index(name='count')
 
 # Sorting by count
 display_df_with_bokeh(domain_df.sort_values('count', ascending=False))
+
+
+# # Institutions / labs that cited the most
+
+# In[25]:
+
+
+# Flatten tlds
+domain_series_to = pd.concat([citations.domain_from], axis=0) 
+
+# Count different values
+domain_df_to = domain_series_to.value_counts().sort_index().rename_axis('domain').reset_index(name='count')
+
+# Sorting by count
+display_df_with_bokeh(domain_df_to.sort_values('count', ascending=False))
 
 
 # ## Institutions per country

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# This notebook reduces the size of our network for visualisation purposes.
+
+# In[3]:
 
 
 import os
@@ -13,13 +15,13 @@ import pandas as pd
 from helper import display_df_with_bokeh
 
 
-# In[2]:
+# In[4]:
 
 
 DATASETS_FOLDER = "datasets"
 
 
-# In[3]:
+# In[5]:
 
 
 # Opening original network with modularity
@@ -27,7 +29,7 @@ with open(f"gephi/nodes_with_modularity_and_degree.csv", 'r') as f:
     gephi_df = pd.read_csv(f, header=0)
 
 
-# In[4]:
+# In[6]:
 
 
 # Calculate records per group
@@ -37,6 +39,12 @@ modularity_df = gephi_df.groupby('modularity_class').count().sort_values('Id', a
 modularity_mt_nodes_df = modularity_df[modularity_df.Id >= 10]
 
 display_df_with_bokeh(modularity_mt_nodes_df, include_index=True)
+
+
+# In[7]:
+
+
+modularity_mt_nodes_df
 
 
 # In[5]:
@@ -51,10 +59,16 @@ print("Total nodes that form part of communities with more than 10 members: ", m
 print("Total nodes that form part of communities with less than 10 members: ", modularity_df[modularity_df.Id < 10].sum()['Id'])
 
 
-# In[7]:
+# In[9]:
 
 
-modularity_df[modularity_df.Id < 10].groupby('Id').count()
+modularity_df[modularity_df.Id < 10]
+
+
+# In[15]:
+
+
+gephi_df[gephi_df['modularity_class'] == 2]
 
 
 # In[8]:
