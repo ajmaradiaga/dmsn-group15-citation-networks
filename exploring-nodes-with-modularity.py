@@ -3,7 +3,7 @@
 
 # This notebook reduces the size of our network for visualisation purposes.
 
-# In[3]:
+# In[1]:
 
 
 import os
@@ -15,21 +15,21 @@ import pandas as pd
 from helper import display_df_with_bokeh
 
 
-# In[4]:
+# In[2]:
 
 
 DATASETS_FOLDER = "datasets"
 
 
-# In[5]:
+# In[3]:
 
 
 # Opening original network with modularity
-with open(f"gephi/nodes_with_modularity_and_degree.csv", 'r') as f:
+with open(f"gephi/citations/nodes_with_all_network_stats.csv", 'r') as f:
     gephi_df = pd.read_csv(f, header=0)
 
 
-# In[6]:
+# In[4]:
 
 
 # Calculate records per group
@@ -39,12 +39,6 @@ modularity_df = gephi_df.groupby('modularity_class').count().sort_values('Id', a
 modularity_mt_nodes_df = modularity_df[modularity_df.Id >= 10]
 
 display_df_with_bokeh(modularity_mt_nodes_df, include_index=True)
-
-
-# In[7]:
-
-
-modularity_mt_nodes_df
 
 
 # In[5]:
@@ -59,33 +53,33 @@ print("Total nodes that form part of communities with more than 10 members: ", m
 print("Total nodes that form part of communities with less than 10 members: ", modularity_df[modularity_df.Id < 10].sum()['Id'])
 
 
-# In[9]:
+# In[7]:
 
 
 modularity_df[modularity_df.Id < 10]
 
 
-# In[15]:
+# In[ ]:
 
 
 gephi_df[gephi_df['modularity_class'] == 2]
 
 
-# In[8]:
+# In[ ]:
 
 
 total_nodes = modularity_mt_nodes_df.sum()['Id']
 total_nodes
 
 
-# In[9]:
+# In[ ]:
 
 
 # DF will contain the most important nodes of each modularity class
 nodes_per_modularity_class_df = None
 
 
-# In[10]:
+# In[ ]:
 
 
 for row in modularity_mt_nodes_df.iterrows():
@@ -106,14 +100,14 @@ for row in modularity_mt_nodes_df.iterrows():
         nodes_per_modularity_class_df = nodes_per_modularity_class_df.append(aux, ignore_index=True)
 
 
-# In[11]:
+# In[ ]:
 
 
 display_df_with_bokeh(nodes_per_modularity_class_df)
 print("Most important nodes of our network: ", nodes_per_modularity_class_df.shape[0])
 
 
-# In[12]:
+# In[ ]:
 
 
 with open(f"{DATASETS_FOLDER}/cit-HepTh.txt", 'r') as f:
@@ -123,20 +117,20 @@ with open(f"{DATASETS_FOLDER}/cit-HepTh.txt", 'r') as f:
 hepth_df.columns = ['FromNodeId', 'ToNodeId']
 
 
-# In[13]:
+# In[ ]:
 
 
 display_df_with_bokeh(hepth_df)
 
 
-# In[14]:
+# In[ ]:
 
 
 nodes_with_modularity_df = nodes_per_modularity_class_df[['Id', 'modularity_class']]
 display_df_with_bokeh(nodes_with_modularity_df)
 
 
-# In[15]:
+# In[ ]:
 
 
 # Join the original network with our most important nodes with modularity
@@ -151,7 +145,7 @@ hepth_df_with_modularity.columns = ['FromNodeId', 'ToNodeId', 'modularity_from',
 hepth_df_with_modularity.drop(['Id'], axis=1, inplace=True)
 
 
-# In[16]:
+# In[ ]:
 
 
 # Remove all edges that have a node that was not found in nodes_with_modularity_df
@@ -159,7 +153,7 @@ hepth_df_with_modularity.dropna(inplace=True)
 hepth_df_with_modularity = hepth_df_with_modularity.astype(int)
 
 
-# In[17]:
+# In[ ]:
 
 
 display_df_with_bokeh(hepth_df_with_modularity)
