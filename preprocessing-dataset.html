@@ -13167,10 +13167,10 @@ div#notebook {
 
 
 
-<div id="b8f54ceb-c964-4677-85d6-a97c951089fd"></div>
+<div id="8a4c2e58-d5af-4b18-8dde-40ddc3a540ea"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#b8f54ceb-c964-4677-85d6-a97c951089fd');
+var element = $('#8a4c2e58-d5af-4b18-8dde-40ddc3a540ea');
 
 (function(root) {
   function now() {
@@ -14578,6 +14578,527 @@ Edges (after removing cycles):  351285
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">edges_with_dates</span> <span class="o">=</span> <span class="n">paper_dates</span><span class="p">[</span><span class="n">paper_dates</span><span class="o">.</span><span class="n">date_from</span> <span class="o">&gt;</span> <span class="n">paper_dates</span><span class="o">.</span><span class="n">date_to</span><span class="p">]</span>
+<span class="n">edges_with_dates</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/cit-HepTh-with-dates.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nodes</span> <span class="o">=</span> <span class="n">edges_with_dates</span><span class="p">[[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;date_from&#39;</span><span class="p">]]</span>
+<span class="n">nodes</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]</span>
+
+<span class="c1"># print(nodes.shape)</span>
+
+<span class="n">to_nodes</span> <span class="o">=</span> <span class="n">edges_with_dates</span><span class="p">[[</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;date_to&#39;</span><span class="p">]]</span>
+<span class="n">to_nodes</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]</span>
+
+<span class="c1"># Create unique dataset with all nodes</span>
+<span class="n">nodes</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">nodes</span><span class="p">,</span> <span class="n">to_nodes</span><span class="p">])</span>
+<span class="n">nodes</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total unique papers: &quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Total unique papers:  27742
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Lets find the last citation that a paper has to know for how long that paper has been relevant.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nodes_citations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">edges_with_dates</span><span class="p">[[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="s1">&#39;date_from&#39;</span><span class="p">,</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">]],</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">)</span>
+
+<span class="n">nodes_with_last_citation</span> <span class="o">=</span> <span class="n">nodes_citations</span><span class="p">[[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;date_from&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+<span class="c1">#nodes_citations.head(100)</span>
+<span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;last_citation&#39;</span><span class="p">]</span>
+
+<span class="c1"># If the paper was not cited, set the last_citation value to when it was published</span>
+<span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">last_citation</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1">#</span>
+<span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[61]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Id</th>
+      <th>date</th>
+      <th>last_citation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10001</td>
+      <td>2000-09-30</td>
+      <td>2000-09-30</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10002</td>
+      <td>2000-09-30</td>
+      <td>2003-01-22</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10003</td>
+      <td>2000-10-01</td>
+      <td>2003-03-10</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10004</td>
+      <td>2000-10-01</td>
+      <td>2002-12-26</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10005</td>
+      <td>2000-10-01</td>
+      <td>2003-01-09</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>10006</td>
+      <td>2000-10-02</td>
+      <td>2003-04-30</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>10007</td>
+      <td>2000-10-02</td>
+      <td>2000-10-02</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>10008</td>
+      <td>2000-10-02</td>
+      <td>2003-01-15</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>10009</td>
+      <td>2000-10-02</td>
+      <td>2001-01-16</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>1001</td>
+      <td>2000-01-01</td>
+      <td>2002-12-18</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>10010</td>
+      <td>2000-10-02</td>
+      <td>2003-03-21</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>10011</td>
+      <td>2000-10-03</td>
+      <td>2001-01-24</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>10012</td>
+      <td>2000-10-03</td>
+      <td>2002-11-19</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>10013</td>
+      <td>2000-10-03</td>
+      <td>2000-10-03</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>10014</td>
+      <td>2000-10-03</td>
+      <td>2003-01-20</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>10015</td>
+      <td>2000-10-03</td>
+      <td>2002-11-26</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>10016</td>
+      <td>2000-10-03</td>
+      <td>2001-12-05</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>10017</td>
+      <td>2000-10-03</td>
+      <td>2003-03-31</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>10018</td>
+      <td>2000-10-04</td>
+      <td>2000-10-23</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>10019</td>
+      <td>2000-10-04</td>
+      <td>2002-12-07</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>1002</td>
+      <td>2000-01-03</td>
+      <td>2001-06-05</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>10020</td>
+      <td>2000-10-04</td>
+      <td>2000-10-04</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>10021</td>
+      <td>2000-10-04</td>
+      <td>2002-03-12</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>10022</td>
+      <td>2000-10-04</td>
+      <td>2003-03-08</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>10023</td>
+      <td>2000-10-04</td>
+      <td>2003-01-22</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>10025</td>
+      <td>2000-10-04</td>
+      <td>2003-04-29</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>10026</td>
+      <td>2000-10-05</td>
+      <td>2003-03-31</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>10027</td>
+      <td>2000-10-05</td>
+      <td>2000-10-05</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>10028</td>
+      <td>2000-10-05</td>
+      <td>2002-07-10</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>10029</td>
+      <td>2000-10-05</td>
+      <td>2000-10-05</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>10068</td>
+      <td>2000-10-10</td>
+      <td>2001-03-01</td>
+    </tr>
+    <tr>
+      <th>71</th>
+      <td>10069</td>
+      <td>2000-10-10</td>
+      <td>2003-04-03</td>
+    </tr>
+    <tr>
+      <th>72</th>
+      <td>1007</td>
+      <td>2000-01-03</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>73</th>
+      <td>10071</td>
+      <td>2000-10-11</td>
+      <td>2003-04-07</td>
+    </tr>
+    <tr>
+      <th>74</th>
+      <td>10072</td>
+      <td>2000-10-11</td>
+      <td>2003-02-01</td>
+    </tr>
+    <tr>
+      <th>75</th>
+      <td>10073</td>
+      <td>2000-10-11</td>
+      <td>2003-03-06</td>
+    </tr>
+    <tr>
+      <th>76</th>
+      <td>10074</td>
+      <td>2000-10-11</td>
+      <td>2000-10-11</td>
+    </tr>
+    <tr>
+      <th>77</th>
+      <td>10075</td>
+      <td>2000-10-11</td>
+      <td>2002-09-09</td>
+    </tr>
+    <tr>
+      <th>78</th>
+      <td>10076</td>
+      <td>2000-10-11</td>
+      <td>2003-03-25</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>10077</td>
+      <td>2000-10-11</td>
+      <td>2001-02-20</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>10078</td>
+      <td>2000-10-11</td>
+      <td>2003-04-29</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>10079</td>
+      <td>2000-10-11</td>
+      <td>2003-03-28</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>1008</td>
+      <td>2000-01-03</td>
+      <td>2002-04-25</td>
+    </tr>
+    <tr>
+      <th>83</th>
+      <td>10080</td>
+      <td>2000-10-11</td>
+      <td>2002-01-16</td>
+    </tr>
+    <tr>
+      <th>84</th>
+      <td>10081</td>
+      <td>2000-10-11</td>
+      <td>2000-10-11</td>
+    </tr>
+    <tr>
+      <th>85</th>
+      <td>10082</td>
+      <td>2000-10-11</td>
+      <td>2002-07-01</td>
+    </tr>
+    <tr>
+      <th>86</th>
+      <td>10083</td>
+      <td>2000-10-11</td>
+      <td>2002-06-13</td>
+    </tr>
+    <tr>
+      <th>87</th>
+      <td>10084</td>
+      <td>2000-10-11</td>
+      <td>2000-10-11</td>
+    </tr>
+    <tr>
+      <th>88</th>
+      <td>10085</td>
+      <td>2000-10-11</td>
+      <td>2000-10-11</td>
+    </tr>
+    <tr>
+      <th>89</th>
+      <td>10086</td>
+      <td>2000-10-11</td>
+      <td>2001-10-22</td>
+    </tr>
+    <tr>
+      <th>90</th>
+      <td>10087</td>
+      <td>2000-10-11</td>
+      <td>2002-12-04</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>10088</td>
+      <td>2000-10-11</td>
+      <td>2003-03-21</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>10089</td>
+      <td>2000-10-11</td>
+      <td>2001-06-29</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>1009</td>
+      <td>2000-01-03</td>
+      <td>2000-07-18</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>10090</td>
+      <td>2000-10-11</td>
+      <td>2003-04-30</td>
+    </tr>
+    <tr>
+      <th>95</th>
+      <td>10091</td>
+      <td>2000-10-11</td>
+      <td>2003-04-30</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>10092</td>
+      <td>2000-10-12</td>
+      <td>2000-10-12</td>
+    </tr>
+    <tr>
+      <th>97</th>
+      <td>10093</td>
+      <td>2000-10-12</td>
+      <td>2002-06-11</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>10094</td>
+      <td>2000-10-12</td>
+      <td>2001-08-28</td>
+    </tr>
+    <tr>
+      <th>99</th>
+      <td>10095</td>
+      <td>2000-10-12</td>
+      <td>2002-03-01</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/cit-HepTh-nodes.csv&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Network-statistics">Network statistics<a class="anchor-link" href="#Network-statistics">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
@@ -14625,10 +15146,10 @@ Edges (after removing cycles):  351285
 
 
 
-<div id="1d68d426-5bc3-426c-aa7f-219f6a297bdc"></div>
+<div id="7885a7ae-59c5-429d-967c-326d09806848"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#1d68d426-5bc3-426c-aa7f-219f6a297bdc');
+var element = $('#7885a7ae-59c5-429d-967c-326d09806848');
 (function(root) {
   function embed_document(root) {
     
@@ -14720,10 +15241,10 @@ var element = $('#1d68d426-5bc3-426c-aa7f-219f6a297bdc');
 
 
 
-<div id="0f85acc9-99de-41f1-8dfd-7dd10a7cff34"></div>
+<div id="86064d65-027b-4ec7-9e8b-af45521315ff"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#0f85acc9-99de-41f1-8dfd-7dd10a7cff34');
+var element = $('#86064d65-027b-4ec7-9e8b-af45521315ff');
 (function(root) {
   function embed_document(root) {
     
@@ -14807,10 +15328,10 @@ var element = $('#0f85acc9-99de-41f1-8dfd-7dd10a7cff34');
 
 
 
-<div id="83395ed5-6a05-4da0-8cd2-4a0314d07830"></div>
+<div id="6b2b9aa8-51b6-4e4a-966f-b496ff74739d"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#83395ed5-6a05-4da0-8cd2-4a0314d07830');
+var element = $('#6b2b9aa8-51b6-4e4a-966f-b496ff74739d');
 (function(root) {
   function embed_document(root) {
     
@@ -14902,10 +15423,10 @@ var element = $('#83395ed5-6a05-4da0-8cd2-4a0314d07830');
 
 
 
-<div id="9caa68d2-6db8-4e76-bcfb-c3b9a3367676"></div>
+<div id="f7a922d4-498f-47e4-bac9-2c132ad7dcd3"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#9caa68d2-6db8-4e76-bcfb-c3b9a3367676');
+var element = $('#f7a922d4-498f-47e4-bac9-2c132ad7dcd3');
 (function(root) {
   function embed_document(root) {
     
@@ -14987,10 +15508,10 @@ var element = $('#9caa68d2-6db8-4e76-bcfb-c3b9a3367676');
 
 
 
-<div id="e85fbace-d93d-4bf2-a589-408dda845f1d"></div>
+<div id="3ef94398-d055-4f57-bce9-f769c917e545"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#e85fbace-d93d-4bf2-a589-408dda845f1d');
+var element = $('#3ef94398-d055-4f57-bce9-f769c917e545');
 (function(root) {
   function embed_document(root) {
     
@@ -15106,10 +15627,10 @@ To retain the current behavior and silence the warning, pass &#39;sort=True&#39;
 
 
 
-<div id="6899f673-a07a-40aa-b6f4-3c70a1490979"></div>
+<div id="30c339c1-7eef-412a-a260-1ef578fc37be"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#6899f673-a07a-40aa-b6f4-3c70a1490979');
+var element = $('#30c339c1-7eef-412a-a260-1ef578fc37be');
 (function(root) {
   function embed_document(root) {
     
@@ -15190,10 +15711,10 @@ var element = $('#6899f673-a07a-40aa-b6f4-3c70a1490979');
 
 
 
-<div id="6bc08e14-8658-4066-ae99-70a40720a36d"></div>
+<div id="7c9dfd3b-670c-461a-97de-5b7400cb6201"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#6bc08e14-8658-4066-ae99-70a40720a36d');
+var element = $('#7c9dfd3b-670c-461a-97de-5b7400cb6201');
 (function(root) {
   function embed_document(root) {
     
@@ -15482,10 +16003,10 @@ var element = $('#6bc08e14-8658-4066-ae99-70a40720a36d');
 
 
 
-<div id="71096e27-338e-41a6-906c-91ad239e8c40"></div>
+<div id="25c52556-920f-46af-8743-2f39d57de089"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#71096e27-338e-41a6-906c-91ad239e8c40');
+var element = $('#25c52556-920f-46af-8743-2f39d57de089');
 (function(root) {
   function embed_document(root) {
     
@@ -15597,10 +16118,10 @@ var element = $('#71096e27-338e-41a6-906c-91ad239e8c40');
 
 
 
-<div id="6aaf3a91-6ccb-424e-8fda-3907eba22945"></div>
+<div id="abc25326-ed05-4857-bd2a-dc1b05f93b5d"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#6aaf3a91-6ccb-424e-8fda-3907eba22945');
+var element = $('#abc25326-ed05-4857-bd2a-dc1b05f93b5d');
 (function(root) {
   function embed_document(root) {
     
@@ -15692,10 +16213,10 @@ var element = $('#6aaf3a91-6ccb-424e-8fda-3907eba22945');
 
 
 
-<div id="94d3ec41-a65c-4386-96b7-03d3d4427530"></div>
+<div id="b36db2fe-13c4-41c2-86d1-18f75399b699"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#94d3ec41-a65c-4386-96b7-03d3d4427530');
+var element = $('#b36db2fe-13c4-41c2-86d1-18f75399b699');
 (function(root) {
   function embed_document(root) {
     
@@ -15787,10 +16308,10 @@ var element = $('#94d3ec41-a65c-4386-96b7-03d3d4427530');
 
 
 
-<div id="62f89a5a-3e18-4d7f-952e-a0ef987d5b6c"></div>
+<div id="d39da5e6-1473-4c09-a89a-92bac443426f"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#62f89a5a-3e18-4d7f-952e-a0ef987d5b6c');
+var element = $('#d39da5e6-1473-4c09-a89a-92bac443426f');
 (function(root) {
   function embed_document(root) {
     
@@ -15832,6 +16353,645 @@ var element = $('#62f89a5a-3e18-4d7f-952e-a0ef987d5b6c');
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">citations</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[66]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FromNodeId</th>
+      <th>ToNodeId</th>
+      <th>emails_from</th>
+      <th>emails_to</th>
+      <th>domain_from</th>
+      <th>tld_from</th>
+      <th>domain_to</th>
+      <th>tld_to</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1001</td>
+      <td>9304045</td>
+      <td>psa@math.duke.edu</td>
+      <td>derrick@bolvan.ph.utexas.edu</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+      <td>utexas.edu</td>
+      <td>edu</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1001</td>
+      <td>9308122</td>
+      <td>psa@math.duke.edu</td>
+      <td>theisen@crnvma.cern.ch</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+      <td>cern.ch</td>
+      <td>ch</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>1001</td>
+      <td>9309097</td>
+      <td>psa@math.duke.edu</td>
+      <td>aspin@guinness.ias.edu</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+      <td>ias.edu</td>
+      <td>edu</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>1001</td>
+      <td>9311042</td>
+      <td>psa@math.duke.edu</td>
+      <td>dmrrsn@math.duke.edu</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1001</td>
+      <td>9401139</td>
+      <td>psa@math.duke.edu</td>
+      <td>giveon@vms.huji.ac.il</td>
+      <td>duke.edu</td>
+      <td>edu</td>
+      <td>huji.ac.il</td>
+      <td>il</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="QMUL-contributions">QMUL contributions<a class="anchor-link" href="#QMUL-contributions">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[89]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qmul_citations</span> <span class="o">=</span> <span class="n">citations</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">citations</span><span class="o">.</span><span class="n">domain_from</span> <span class="o">==</span> <span class="s1">&#39;qmul.ac.uk&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">citations</span><span class="o">.</span><span class="n">domain_to</span> <span class="o">==</span> <span class="s1">&#39;qmul.ac.uk&#39;</span><span class="p">)</span> <span class="o">|</span> 
+    <span class="p">(</span><span class="n">citations</span><span class="o">.</span><span class="n">domain_from</span> <span class="o">==</span> <span class="s1">&#39;qmw.ac.uk&#39;</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">citations</span><span class="o">.</span><span class="n">domain_to</span> <span class="o">==</span> <span class="s1">&#39;qmw.ac.uk&#39;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="n">qmul_citations_from</span> <span class="o">=</span> <span class="n">qmul_citations</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">qmul_citations</span><span class="o">.</span><span class="n">domain_from</span> <span class="o">==</span> <span class="s1">&#39;qmul.ac.uk&#39;</span><span class="p">)</span> <span class="o">|</span> 
+    <span class="p">(</span><span class="n">qmul_citations</span><span class="o">.</span><span class="n">domain_from</span> <span class="o">==</span> <span class="s1">&#39;qmw.ac.uk&#39;</span><span class="p">)][[</span><span class="s1">&#39;FromNodeId&#39;</span><span class="p">]</span><span class="c1">#,&#39;domain_from&#39;]</span>
+<span class="p">]</span>
+<span class="n">qmul_citations_from</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Paper&#39;</span><span class="p">]</span>
+
+<span class="n">qmul_citations_to</span> <span class="o">=</span> <span class="n">qmul_citations</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">qmul_citations</span><span class="o">.</span><span class="n">domain_to</span> <span class="o">==</span> <span class="s1">&#39;qmul.ac.uk&#39;</span><span class="p">)</span> <span class="o">|</span> 
+    <span class="p">(</span><span class="n">qmul_citations</span><span class="o">.</span><span class="n">domain_to</span> <span class="o">==</span> <span class="s1">&#39;qmw.ac.uk&#39;</span><span class="p">)][[</span><span class="s1">&#39;ToNodeId&#39;</span><span class="p">]</span><span class="c1">#,&#39;domain_to&#39;]</span>
+<span class="p">]</span>
+<span class="n">qmul_citations_to</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Paper&#39;</span><span class="p">]</span>
+
+<span class="c1"># Join all nodes and remove duplicates.</span>
+<span class="c1"># As a paper can be as a FromNode and ToNode, we will remove duplicates</span>
+<span class="n">qmul_papers</span> <span class="o">=</span> <span class="n">qmul_citations_from</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">qmul_citations_to</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">qmul_papers</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>(157, 1)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[94]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qmul_papers</span><span class="o">.</span><span class="n">Paper</span> <span class="o">=</span> <span class="n">qmul_papers</span><span class="o">.</span><span class="n">Paper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[92]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">in_degree</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[92]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>FromNodeId</th>
+    </tr>
+    <tr>
+      <th>ToNodeId</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9711200</th>
+      <td>2414</td>
+    </tr>
+    <tr>
+      <th>9802150</th>
+      <td>1775</td>
+    </tr>
+    <tr>
+      <th>9802109</th>
+      <td>1641</td>
+    </tr>
+    <tr>
+      <th>9407087</th>
+      <td>1299</td>
+    </tr>
+    <tr>
+      <th>9610043</th>
+      <td>1199</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[100]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">qmul_papers_in_degree</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">in_degree</span><span class="p">,</span> <span class="n">qmul_papers</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;ToNodeId&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;Paper&#39;</span><span class="p">)</span> <span class="c1"># df.join(df_dates[[&#39;date&#39;]], on=&#39;FromNodeId&#39;)</span>
+
+<span class="n">qmul_papers_in_degree</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">qmul_papers_in_degree</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;citations&#39;</span><span class="p">,</span> <span class="s1">&#39;Paper&#39;</span><span class="p">]</span>
+
+<span class="n">qmul_papers_in_degree</span><span class="p">[[</span><span class="s1">&#39;Paper&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">]]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[100]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Paper</th>
+      <th>citations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>14</th>
+      <td>9410167</td>
+      <td>748</td>
+    </tr>
+    <tr>
+      <th>304</th>
+      <td>9806146</td>
+      <td>124</td>
+    </tr>
+    <tr>
+      <th>359</th>
+      <td>9505073</td>
+      <td>113</td>
+    </tr>
+    <tr>
+      <th>437</th>
+      <td>9506194</td>
+      <td>102</td>
+    </tr>
+    <tr>
+      <th>555</th>
+      <td>9512181</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <th>572</th>
+      <td>9705162</td>
+      <td>87</td>
+    </tr>
+    <tr>
+      <th>785</th>
+      <td>9606193</td>
+      <td>71</td>
+    </tr>
+    <tr>
+      <th>823</th>
+      <td>9711205</td>
+      <td>69</td>
+    </tr>
+    <tr>
+      <th>876</th>
+      <td>109213</td>
+      <td>67</td>
+    </tr>
+    <tr>
+      <th>1039</th>
+      <td>9808014</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>1081</th>
+      <td>9508091</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <th>1343</th>
+      <td>9807127</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>1368</th>
+      <td>9803216</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>1481</th>
+      <td>106117</td>
+      <td>47</td>
+    </tr>
+    <tr>
+      <th>1551</th>
+      <td>203255</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <th>1688</th>
+      <td>9707223</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <th>1893</th>
+      <td>9705138</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <th>1922</th>
+      <td>11190</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <th>2163</th>
+      <td>9811021</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>2191</th>
+      <td>12195</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <th>2314</th>
+      <td>9808069</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <th>2345</th>
+      <td>9707118</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <th>2498</th>
+      <td>110034</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>2582</th>
+      <td>104071</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <th>2621</th>
+      <td>9704021</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2657</th>
+      <td>9812205</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2700</th>
+      <td>9806169</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>2791</th>
+      <td>9310200</td>
+      <td>29</td>
+    </tr>
+    <tr>
+      <th>2992</th>
+      <td>9711179</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <th>3072</th>
+      <td>10232</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>18228</th>
+      <td>9907095</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18236</th>
+      <td>7014</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18338</th>
+      <td>9603200</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18569</th>
+      <td>209115</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18784</th>
+      <td>9901131</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18787</th>
+      <td>212346</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18880</th>
+      <td>102165</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>19005</th>
+      <td>9507004</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>19197</th>
+      <td>2086</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>19376</th>
+      <td>107252</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>19726</th>
+      <td>105152</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>19822</th>
+      <td>101217</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>20032</th>
+      <td>9908147</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>20696</th>
+      <td>9310014</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21016</th>
+      <td>9408034</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21032</th>
+      <td>9407163</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21043</th>
+      <td>9408112</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21192</th>
+      <td>9405017</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21199</th>
+      <td>6167</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21220</th>
+      <td>6166</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21558</th>
+      <td>9501094</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21617</th>
+      <td>9712163</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21844</th>
+      <td>201009</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21888</th>
+      <td>9708021</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>21968</th>
+      <td>9710096</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22057</th>
+      <td>109123</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22406</th>
+      <td>9308105</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22479</th>
+      <td>205128</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22620</th>
+      <td>208051</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>22646</th>
+      <td>207081</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>147 rows × 2 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">

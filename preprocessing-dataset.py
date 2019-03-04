@@ -456,6 +456,58 @@ df = edges_without_cycles
 df.to_csv(f"{DATASETS_FOLDER}/cit-HepTh-no-cycles.csv", index=False)
 
 
+# In[40]:
+
+
+edges_with_dates = paper_dates[paper_dates.date_from > paper_dates.date_to]
+edges_with_dates.to_csv(f"{DATASETS_FOLDER}/cit-HepTh-with-dates.csv", index=False)
+
+
+# In[59]:
+
+
+nodes = edges_with_dates[['FromNodeId', 'date_from']]
+nodes.columns = ['Id', 'date']
+
+# print(nodes.shape)
+
+to_nodes = edges_with_dates[['ToNodeId', 'date_to']]
+to_nodes.columns = ['Id', 'date']
+
+# Create unique dataset with all nodes
+nodes = pd.concat([nodes, to_nodes])
+nodes.drop_duplicates(inplace=True)
+
+print("Total unique papers: ", nodes.shape[0])
+
+
+# Lets find the last citation that a paper has to know for how long that paper has been relevant.
+
+# In[61]:
+
+
+nodes_citations = pd.merge(nodes, edges_with_dates[['FromNodeId', 'date_from', 'ToNodeId']], how = 'left', left_on = 'Id', right_on = 'ToNodeId')
+
+nodes_with_last_citation = nodes_citations[['Id', 'date', 'date_from']].groupby(['Id', 'date']).max().reset_index()
+
+#nodes_citations.head(100)
+nodes_with_last_citation.columns = ['Id', 'date', 'last_citation']
+
+# If the paper was not cited, set the last_citation value to when it was published
+nodes_with_last_citation.last_citation.fillna(nodes_with_last_citation.date, inplace=True)
+
+#
+nodes_with_last_citation.head(100)
+
+
+# In[62]:
+
+
+nodes_with_last_citation.to_csv(f"{DATASETS_FOLDER}/cit-HepTh-nodes.csv", index=False)
+
+
+# ## Network statistics
+
 # In[23]:
 
 
@@ -652,6 +704,65 @@ display_df_with_bokeh(domain_df_to.sort_values('count', ascending=False))
 
 # ## Institutions per country
 # ![alt text](visualisation/screenshots/institutions_per_country.jpeg "Title")
+
+# In[66]:
+
+
+citations.head()
+
+
+# ## QMUL contributions
+
+# In[89]:
+
+
+qmul_citations = citations[
+    (citations.domain_from == 'qmul.ac.uk') | (citations.domain_to == 'qmul.ac.uk') | 
+    (citations.domain_from == 'qmw.ac.uk') | (citations.domain_to == 'qmw.ac.uk')
+]
+
+qmul_citations_from = qmul_citations[
+    (qmul_citations.domain_from == 'qmul.ac.uk') | 
+    (qmul_citations.domain_from == 'qmw.ac.uk')][['FromNodeId']#,'domain_from']
+]
+qmul_citations_from.columns = ['Paper']
+
+qmul_citations_to = qmul_citations[
+    (qmul_citations.domain_to == 'qmul.ac.uk') | 
+    (qmul_citations.domain_to == 'qmw.ac.uk')][['ToNodeId']#,'domain_to']
+]
+qmul_citations_to.columns = ['Paper']
+
+# Join all nodes and remove duplicates.
+# As a paper can be as a FromNode and ToNode, we will remove duplicates
+qmul_papers = qmul_citations_from.append(qmul_citations_to).drop_duplicates()
+
+print(qmul_papers.shape)
+
+
+# In[94]:
+
+
+qmul_papers.Paper = qmul_papers.Paper.map(str)
+
+
+# In[92]:
+
+
+in_degree.head()
+
+
+# In[100]:
+
+
+qmul_papers_in_degree = pd.merge(in_degree, qmul_papers, how = 'left', left_on = 'ToNodeId', right_on = 'Paper') # df.join(df_dates[['date']], on='FromNodeId')
+
+qmul_papers_in_degree.dropna(inplace=True)
+
+qmul_papers_in_degree.columns = ['citations', 'Paper']
+
+qmul_papers_in_degree[['Paper', 'citations']]
+
 
 # ## Save Dataframes
 
