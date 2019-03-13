@@ -395,6 +395,18 @@ abstract_dates.papers = abstract_dates.papers.map(str)
 abstract_dates.head()
 
 
+# In[105]:
+
+
+abstracts.head(10)
+
+
+# In[106]:
+
+
+abstracts[['title', 'description', 'date']].head(100)
+
+
 # In[15]:
 
 
@@ -504,6 +516,31 @@ nodes_with_last_citation.head(100)
 
 
 nodes_with_last_citation.to_csv(f"{DATASETS_FOLDER}/cit-HepTh-nodes.csv", index=False)
+
+
+# In[118]:
+
+
+nodes_last_citation_ix = nodes_with_last_citation.set_index('Id', inplace=False)
+nodes_last_citation_ix['last_citation']
+
+
+# In[124]:
+
+
+abstract_with_last_citation = abstracts.join(nodes_last_citation_ix[['last_citation']])
+abstract_with_last_citation.index.name = 'paper'
+
+abstract_with_last_citation.to_csv(f"{DATASETS_FOLDER}/abstracts_with_last_citation.csv")
+
+
+# In[133]:
+
+
+abstracts.index.name = 'paper'
+
+edges_with_from_abstracts = pd.merge(edges_with_dates, abstract_with_last_citation, how = 'left', left_on = 'FromNodeId', right_on = 'paper')
+edges_with_from_abstracts.to_csv(f"{DATASETS_FOLDER}/edges_with_from_abstracts.csv", index = False)
 
 
 # ## Network statistics

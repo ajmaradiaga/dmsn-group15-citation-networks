@@ -13167,10 +13167,10 @@ div#notebook {
 
 
 
-<div id="8a4c2e58-d5af-4b18-8dde-40ddc3a540ea"></div>
+<div id="08b2a3a8-277b-49e4-8b48-252959e00ab3"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#8a4c2e58-d5af-4b18-8dde-40ddc3a540ea');
+var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
 
 (function(root) {
   function now() {
@@ -14215,6 +14215,615 @@ Wed, 13 Sep 0 21:31:44 &#34;KST   (9kb) None
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[105]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abstracts</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[105]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>emails</th>
+      <th>description</th>
+      <th>date</th>
+      <th>from</th>
+      <th>title</th>
+      <th>authors</th>
+      <th>comments</th>
+      <th>subj-class</th>
+      <th>journal-ref</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1001</th>
+      <td>[psa@math.duke.edu]</td>
+      <td>These are notes based on lectures given at TAS...</td>
+      <td>2000-01-01</td>
+      <td>Paul S. Aspinwall &lt;psa@math.duke.edu&gt;</td>
+      <td>Compactification, Geometry and Duality: N=2</td>
+      <td>Paul S. Aspinwall</td>
+      <td>82 pages, 8 figures, LaTeX2e, TASI99, refs add...</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1002</th>
+      <td>[pope@absinthe.physics.tamu.edu]</td>
+      <td>We point out that massive gauged supergravity ...</td>
+      <td>2000-01-03</td>
+      <td>Chris Pope &lt;pope@absinthe.physics.tamu.edu&gt;</td>
+      <td>Domain Walls and Massive Gauged Supergravity P...</td>
+      <td>M. Cvetic, H. Lu and C.N. Pope</td>
+      <td>latex file, 11 pages, 3 figures</td>
+      <td>None</td>
+      <td>Class.Quant.Grav. 17 (2000) 4867-4876</td>
+    </tr>
+    <tr>
+      <th>1003</th>
+      <td>[kang@physics.inje.ac.kr]</td>
+      <td>Recently, Ivanov and Volovich (hep-th/9912242)...</td>
+      <td>2000-01-01</td>
+      <td>KANG Gungwon &lt;kang@physics.inje.ac.kr&gt;</td>
+      <td>Comment on "Metric Fluctuations in Brane Worlds"</td>
+      <td>Y.S. Myung and Gungwon Kang</td>
+      <td>4 pages, revtex</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1004</th>
+      <td>[adam@godel.math.missouri.edu]</td>
+      <td>Quantum fields responding to "moving mirrors" ...</td>
+      <td>2000-01-01</td>
+      <td>Adam D. Helfer &lt;adam@godel.math.missouri.edu&gt;</td>
+      <td>Moving Mirrors and Thermodynamic Paradoxes</td>
+      <td>Adam D. Helfer</td>
+      <td>7 pages, Revtex with Latex2e</td>
+      <td>None</td>
+      <td>Phys.Rev. D63 (2001) 025016</td>
+    </tr>
+    <tr>
+      <th>1005</th>
+      <td>[jfuchs@mail.desy.de]</td>
+      <td>Various aspects of spaces of chiral blocks are...</td>
+      <td>2000-01-02</td>
+      <td>Juergen Fuchs &lt;jfuchs@mail.desy.de&gt;</td>
+      <td>Bundles of chiral blocks and boundary conditio...</td>
+      <td>J. Fuchs, C. Schweigert</td>
+      <td>18 pages, LaTeX2e; slightly extended version o...</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1006</th>
+      <td>[buchholz@theorie.physik.uni-goettingen.de]</td>
+      <td>An assessment of the present status of the the...</td>
+      <td>2000-01-03</td>
+      <td>Buchholz &lt;buchholz@theorie.physik.uni-goetting...</td>
+      <td>Questions in quantum physics: a personal view</td>
+      <td>Rudolf Haag</td>
+      <td>15 pages</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1007</th>
+      <td>[lisheng@itp.ac.cn]</td>
+      <td>By making use of the complete decomposition of...</td>
+      <td>2000-01-03</td>
+      <td>Sheng Li &lt;lisheng@itp.ac.cn&gt;</td>
+      <td>Topological Defects in 3-d Euclidean Gravity</td>
+      <td>Sheng Li, Yong Zhang and Zhongyuan Zhu</td>
+      <td>9 pages, Revtex</td>
+      <td>High Energy Physics - Theory; Mathematical Phy...</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1008</th>
+      <td>[spector@hws.edu]</td>
+      <td>We study some of the algebraic properties of t...</td>
+      <td>2000-01-03</td>
+      <td>Donald Spector &lt;spector@HWS.EDU&gt;</td>
+      <td>N=0 Supersymmetry and the Non-Relativistic Mon...</td>
+      <td>Donald Spector</td>
+      <td>9 pages, harvmac, no figures</td>
+      <td>None</td>
+      <td>Phys.Lett. B474 (2000) 331-335</td>
+    </tr>
+    <tr>
+      <th>1009</th>
+      <td>[nayak@th.physik.uni-frankfurt.de]</td>
+      <td>We compute the probabilty for the processes A ...</td>
+      <td>2000-01-03</td>
+      <td>"Gouranga C. Nayak" &lt;nayak@th.physik.uni-frank...</td>
+      <td>Gluon Pair Production From Space-Time Dependen...</td>
+      <td>Gouranga C. Nayak and Walter Greiner</td>
+      <td>One figure added, revised version</td>
+      <td>None</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1010</th>
+      <td>[belitsky@insti.physics.sunysb.edu]</td>
+      <td>We discuss the reality properties of the fermi...</td>
+      <td>2000-01-04</td>
+      <td>Andrei Belitsky &lt;belitsky@insti.physics.sunysb...</td>
+      <td>Instantons, Euclidean supersymmetry and Wick r...</td>
+      <td>A.V. Belitsky, S. Vandoren, P. van Nieuwenhuizen</td>
+      <td>8 pages, LaTeX, typos fixed</td>
+      <td>None</td>
+      <td>Phys.Lett. B477 (2000) 335-340</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[106]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abstracts</span><span class="p">[[</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;date&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[106]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>description</th>
+      <th>date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1001</th>
+      <td>Compactification, Geometry and Duality: N=2</td>
+      <td>These are notes based on lectures given at TAS...</td>
+      <td>2000-01-01</td>
+    </tr>
+    <tr>
+      <th>1002</th>
+      <td>Domain Walls and Massive Gauged Supergravity P...</td>
+      <td>We point out that massive gauged supergravity ...</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>1003</th>
+      <td>Comment on "Metric Fluctuations in Brane Worlds"</td>
+      <td>Recently, Ivanov and Volovich (hep-th/9912242)...</td>
+      <td>2000-01-01</td>
+    </tr>
+    <tr>
+      <th>1004</th>
+      <td>Moving Mirrors and Thermodynamic Paradoxes</td>
+      <td>Quantum fields responding to "moving mirrors" ...</td>
+      <td>2000-01-01</td>
+    </tr>
+    <tr>
+      <th>1005</th>
+      <td>Bundles of chiral blocks and boundary conditio...</td>
+      <td>Various aspects of spaces of chiral blocks are...</td>
+      <td>2000-01-02</td>
+    </tr>
+    <tr>
+      <th>1006</th>
+      <td>Questions in quantum physics: a personal view</td>
+      <td>An assessment of the present status of the the...</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>1007</th>
+      <td>Topological Defects in 3-d Euclidean Gravity</td>
+      <td>By making use of the complete decomposition of...</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>1008</th>
+      <td>N=0 Supersymmetry and the Non-Relativistic Mon...</td>
+      <td>We study some of the algebraic properties of t...</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>1009</th>
+      <td>Gluon Pair Production From Space-Time Dependen...</td>
+      <td>We compute the probabilty for the processes A ...</td>
+      <td>2000-01-03</td>
+    </tr>
+    <tr>
+      <th>1010</th>
+      <td>Instantons, Euclidean supersymmetry and Wick r...</td>
+      <td>We discuss the reality properties of the fermi...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1011</th>
+      <td>Noncommutativities of D-branes and $\theta$-ch...</td>
+      <td>It is known that when there are several D-bran...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1012</th>
+      <td>Boundary Liouville Field Theory I. Boundary St...</td>
+      <td>Liouville conformal field theory is considered...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1013</th>
+      <td>Gravity and the Newtonian limit in the Randall...</td>
+      <td>We point out that the gravitational evolution ...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1014</th>
+      <td>Gauge theories in local causal perturbation th...</td>
+      <td>In this thesis quantum gauge theories are cons...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1015</th>
+      <td>Canonical Quantization and Topological Theories</td>
+      <td>The canonical quantization of the topological ...</td>
+      <td>2000-01-04</td>
+    </tr>
+    <tr>
+      <th>1016</th>
+      <td>A Comment on the Holographic Renormalization G...</td>
+      <td>The equivalence between the holographic renorm...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1017</th>
+      <td>The Interaction of Two Hopf Solitons</td>
+      <td>This Letter deals with topological solitons in...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1018</th>
+      <td>Solitons in Brane Worlds II</td>
+      <td>We study the solution describing a non-extreme...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1019</th>
+      <td>Casimir energy of a dilute dielectric ball wit...</td>
+      <td>The Casimir energy, free energy and Casimir fo...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1020</th>
+      <td>Some uses of moduli spaces in particle and fie...</td>
+      <td>In this talk I shall try to give an elementary...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1021</th>
+      <td>A Two-loop Test of Buscher's T-duality I</td>
+      <td>We study the two loop quantum equivalence of s...</td>
+      <td>2000-01-05</td>
+    </tr>
+    <tr>
+      <th>1022</th>
+      <td>Supersymmetry and Bogomol'nyi equations in the...</td>
+      <td>We take advantage of the superspace formalism ...</td>
+      <td>2000-01-06</td>
+    </tr>
+    <tr>
+      <th>1023</th>
+      <td>The String Uncertainty Relations follow from t...</td>
+      <td>The String Uncertainty Relations have been kno...</td>
+      <td>2000-01-06</td>
+    </tr>
+    <tr>
+      <th>1024</th>
+      <td>BPS states of D=4 N=1 supersymmetry</td>
+      <td>We find the combinations of momentum and domai...</td>
+      <td>2000-01-06</td>
+    </tr>
+    <tr>
+      <th>1025</th>
+      <td>Collapsing D-Branes in Calabi-Yau Moduli Space: I</td>
+      <td>We study the quantum volume of D-branes wrappe...</td>
+      <td>2000-01-06</td>
+    </tr>
+    <tr>
+      <th>1026</th>
+      <td>Poisson-Sigma Models</td>
+      <td>We investigate the Poisson-Sigma model on the ...</td>
+      <td>2000-01-07</td>
+    </tr>
+    <tr>
+      <th>1027</th>
+      <td>Bi-local Fields in Noncommutative Field Theory</td>
+      <td>We propose a bi-local representation in noncom...</td>
+      <td>2000-01-07</td>
+    </tr>
+    <tr>
+      <th>1028</th>
+      <td>Tree Amplitudes and Linearized SUSY Invariants...</td>
+      <td>We exploit the tree level bosonic 4-particle s...</td>
+      <td>2000-01-07</td>
+    </tr>
+    <tr>
+      <th>1029</th>
+      <td>Type I' and Real Algebraic Geometry</td>
+      <td>We revisit the duality between type I' and het...</td>
+      <td>2000-01-07</td>
+    </tr>
+    <tr>
+      <th>1030</th>
+      <td>A geometric discretisation scheme applied to t...</td>
+      <td>We give a detailed general description of a re...</td>
+      <td>2000-01-07</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>1071</th>
+      <td>Supersymmetry and the Brane World</td>
+      <td>We investigate the possibility of gravity loca...</td>
+      <td>2000-01-11</td>
+    </tr>
+    <tr>
+      <th>1072</th>
+      <td>Twistors and Actions on Coset Manifolds</td>
+      <td>Particle and string actions on coset spaces ty...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1073</th>
+      <td>Dirac Monopole in Non-Commutative Space</td>
+      <td>We consider static U(1) monopole in non-commut...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1074</th>
+      <td>Algebraic Linearization of Dynamics of Caloger...</td>
+      <td>Calogero-Moser systems can be generalized for ...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1075</th>
+      <td>The RP^2 Valued Sigma and Baby Skyrme Models</td>
+      <td>We investigate the sigma and baby Skyrme model...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1076</th>
+      <td>Generalized two-dimensional Yang-Mills theory ...</td>
+      <td>We consider two-dimensional Yang-Mills theorie...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1077</th>
+      <td>Open-string models with broken supersymmetry</td>
+      <td>I review the salient features of three classes...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1078</th>
+      <td>A note on Riemann normal coordinates</td>
+      <td>The goal of this note is to provide a recursiv...</td>
+      <td>2000-01-12</td>
+    </tr>
+    <tr>
+      <th>1080</th>
+      <td>Three dimensional gravity from ISO(2,1) coset ...</td>
+      <td>Starting from a WZWN action in the ISO(2,1) Po...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1081</th>
+      <td>BRST Formalism and Zero Locus Reduction</td>
+      <td>In the BRST quantization of gauge theories, th...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1082</th>
+      <td>Domain Walls and Superpotentials from M Theory...</td>
+      <td>Compactification of M theory in the presence o...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1083</th>
+      <td>Heterotic/Type II Triality and Instantons on $...</td>
+      <td>A detailed understanding of instanton effects ...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1084</th>
+      <td>The Tachyon Potential in Open Neveu-Schwarz St...</td>
+      <td>A classical action for open superstring field ...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1085</th>
+      <td>Trans-Planckian redshifts and the substance of...</td>
+      <td>Trans-Planckian redshifts in cosmology and out...</td>
+      <td>2000-01-13</td>
+    </tr>
+    <tr>
+      <th>1086</th>
+      <td>Boundary Operators in Quantum Field Theory</td>
+      <td>The fundamental laws of physics can be derived...</td>
+      <td>2000-01-14</td>
+    </tr>
+    <tr>
+      <th>1087</th>
+      <td>The commutativity principle and lagrangian sym...</td>
+      <td>Using the commutativity of a general variation...</td>
+      <td>2000-01-14</td>
+    </tr>
+    <tr>
+      <th>1088</th>
+      <td>Mesoscopic Fluctuations in Stochastic Spacetime</td>
+      <td>Mesoscopic effects associated with wave propag...</td>
+      <td>2000-01-15</td>
+    </tr>
+    <tr>
+      <th>1089</th>
+      <td>Noncommutative Super Yang-Mills Theories with ...</td>
+      <td>In this paper we consider D=4 NCSYM theories w...</td>
+      <td>2000-01-15</td>
+    </tr>
+    <tr>
+      <th>1090</th>
+      <td>Quantum extreme black holes at finite temperat...</td>
+      <td>It is argued that in certain 2d dilaton gravit...</td>
+      <td>2000-01-15</td>
+    </tr>
+    <tr>
+      <th>1091</th>
+      <td>Dual generalizations of sine-Gordon field theo...</td>
+      <td>The dual relationship between two n-1 paramete...</td>
+      <td>2000-01-16</td>
+    </tr>
+    <tr>
+      <th>1092</th>
+      <td>Gravity in the brane-world for two-branes mode...</td>
+      <td>We present a complete scheme to discuss linear...</td>
+      <td>2000-01-16</td>
+    </tr>
+    <tr>
+      <th>1093</th>
+      <td>Scales of String Theory</td>
+      <td>I review the arguments in favor of/against the...</td>
+      <td>2000-01-16</td>
+    </tr>
+    <tr>
+      <th>1094</th>
+      <td>Bosonized supersymmetric quantum mechanics and...</td>
+      <td>We review the construction of minimally bosoni...</td>
+      <td>2000-01-16</td>
+    </tr>
+    <tr>
+      <th>1095</th>
+      <td>Conformal Anomaly and Large Scale Gravitationa...</td>
+      <td>We present a model in which the breackdown of ...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1096</th>
+      <td>Scalar Tensor Theories and Hadamard State Cond...</td>
+      <td>The Hadamard state condition is used to analyz...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1097</th>
+      <td>The Intrinsic Coupling in Integrable Quantum F...</td>
+      <td>The intrinsic 4-point coupling, defined in ter...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1098</th>
+      <td>Electromagnetic dipole radiation of oscillatin...</td>
+      <td>I emphasize analogy between Dp-branes in strin...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1099</th>
+      <td>On consistency of the closed bosonic string wi...</td>
+      <td>Closed bosonic string with different normal or...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1100</th>
+      <td>Gravitating (bi-)sphalerons</td>
+      <td>The standard model of electroweak interactions...</td>
+      <td>2000-01-17</td>
+    </tr>
+    <tr>
+      <th>1101</th>
+      <td>Standard Model Vacua in Heterotic M-Theory</td>
+      <td>We present a class of N=1 supersymmetric ``sta...</td>
+      <td>2000-01-17</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 3 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
@@ -15090,6 +15699,134 @@ Edges (after removing cycles):  351285
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[118]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">nodes_last_citation_ix</span> <span class="o">=</span> <span class="n">nodes_with_last_citation</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">nodes_last_citation_ix</span><span class="p">[</span><span class="s1">&#39;last_citation&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[118]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Id
+10001     2000-09-30
+10002     2003-01-22
+10003     2003-03-10
+10004     2002-12-26
+10005     2003-01-09
+10006     2003-04-30
+10007     2000-10-02
+10008     2003-01-15
+10009     2001-01-16
+1001      2002-12-18
+10010     2003-03-21
+10011     2001-01-24
+10012     2002-11-19
+10013     2000-10-03
+10014     2003-01-20
+10015     2002-11-26
+10016     2001-12-05
+10017     2003-03-31
+10018     2000-10-23
+10019     2002-12-07
+1002      2001-06-05
+10020     2000-10-04
+10021     2002-03-12
+10022     2003-03-08
+10023     2003-01-22
+10025     2003-04-29
+10026     2003-03-31
+10027     2000-10-05
+10028     2002-07-10
+10029     2000-10-05
+             ...    
+9912264   2003-01-10
+9912265   2001-01-16
+9912266   2002-05-10
+9912267   2002-12-31
+9912268   2002-12-16
+9912269   2003-02-26
+9912270   1999-12-29
+9912271   2003-04-29
+9912272   2003-03-11
+9912273   2002-09-26
+9912274   2003-04-30
+9912275   2003-03-25
+9912276   2001-06-18
+9912277   2001-04-23
+9912278   2002-09-03
+9912279   2003-03-26
+9912280   2002-05-14
+9912281   2002-04-08
+9912282   2000-06-22
+9912283   2002-12-09
+9912284   2002-03-04
+9912285   2001-02-20
+9912286   1999-12-31
+9912287   2003-04-22
+9912288   2000-08-15
+9912289   2002-10-14
+9912290   2001-05-31
+9912291   2002-03-06
+9912292   2000-01-31
+9912293   2002-08-28
+Name: last_citation, Length: 27742, dtype: datetime64[ns]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[124]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abstract_with_last_citation</span> <span class="o">=</span> <span class="n">abstracts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nodes_last_citation_ix</span><span class="p">[[</span><span class="s1">&#39;last_citation&#39;</span><span class="p">]])</span>
+<span class="n">abstract_with_last_citation</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span>
+
+<span class="n">abstract_with_last_citation</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/abstracts_with_last_citation.csv&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[133]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">abstracts</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span>
+
+<span class="n">edges_with_from_abstracts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">edges_with_dates</span><span class="p">,</span> <span class="n">abstract_with_last_citation</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;FromNodeId&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span><span class="p">)</span>
+<span class="n">edges_with_from_abstracts</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/edges_with_from_abstracts.csv&quot;</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -15146,10 +15883,10 @@ Edges (after removing cycles):  351285
 
 
 
-<div id="7885a7ae-59c5-429d-967c-326d09806848"></div>
+<div id="ff569067-6480-49c3-8389-30fdf7532194"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#7885a7ae-59c5-429d-967c-326d09806848');
+var element = $('#ff569067-6480-49c3-8389-30fdf7532194');
 (function(root) {
   function embed_document(root) {
     
@@ -15241,10 +15978,10 @@ var element = $('#7885a7ae-59c5-429d-967c-326d09806848');
 
 
 
-<div id="86064d65-027b-4ec7-9e8b-af45521315ff"></div>
+<div id="fbe55559-2b78-43e5-a48a-8c2ebe056998"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#86064d65-027b-4ec7-9e8b-af45521315ff');
+var element = $('#fbe55559-2b78-43e5-a48a-8c2ebe056998');
 (function(root) {
   function embed_document(root) {
     
@@ -15328,10 +16065,10 @@ var element = $('#86064d65-027b-4ec7-9e8b-af45521315ff');
 
 
 
-<div id="6b2b9aa8-51b6-4e4a-966f-b496ff74739d"></div>
+<div id="0d29c3dd-bd4b-4b75-b3f5-4c74de923c58"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#6b2b9aa8-51b6-4e4a-966f-b496ff74739d');
+var element = $('#0d29c3dd-bd4b-4b75-b3f5-4c74de923c58');
 (function(root) {
   function embed_document(root) {
     
@@ -15423,10 +16160,10 @@ var element = $('#6b2b9aa8-51b6-4e4a-966f-b496ff74739d');
 
 
 
-<div id="f7a922d4-498f-47e4-bac9-2c132ad7dcd3"></div>
+<div id="7252c35a-c904-4fd0-b472-1760754c0155"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#f7a922d4-498f-47e4-bac9-2c132ad7dcd3');
+var element = $('#7252c35a-c904-4fd0-b472-1760754c0155');
 (function(root) {
   function embed_document(root) {
     
@@ -15508,10 +16245,10 @@ var element = $('#f7a922d4-498f-47e4-bac9-2c132ad7dcd3');
 
 
 
-<div id="3ef94398-d055-4f57-bce9-f769c917e545"></div>
+<div id="cde54356-1f79-488c-b370-fa8756e01f70"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#3ef94398-d055-4f57-bce9-f769c917e545');
+var element = $('#cde54356-1f79-488c-b370-fa8756e01f70');
 (function(root) {
   function embed_document(root) {
     
@@ -15627,10 +16364,10 @@ To retain the current behavior and silence the warning, pass &#39;sort=True&#39;
 
 
 
-<div id="30c339c1-7eef-412a-a260-1ef578fc37be"></div>
+<div id="9bc95334-f03b-4887-8d19-56185b6c9dad"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#30c339c1-7eef-412a-a260-1ef578fc37be');
+var element = $('#9bc95334-f03b-4887-8d19-56185b6c9dad');
 (function(root) {
   function embed_document(root) {
     
@@ -15711,10 +16448,10 @@ var element = $('#30c339c1-7eef-412a-a260-1ef578fc37be');
 
 
 
-<div id="7c9dfd3b-670c-461a-97de-5b7400cb6201"></div>
+<div id="783f2481-2d25-4a28-999d-5174d8da4160"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#7c9dfd3b-670c-461a-97de-5b7400cb6201');
+var element = $('#783f2481-2d25-4a28-999d-5174d8da4160');
 (function(root) {
   function embed_document(root) {
     
@@ -16003,10 +16740,10 @@ var element = $('#7c9dfd3b-670c-461a-97de-5b7400cb6201');
 
 
 
-<div id="25c52556-920f-46af-8743-2f39d57de089"></div>
+<div id="d6f0b0f9-4c7a-41b2-9f45-8aa865336c0f"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#25c52556-920f-46af-8743-2f39d57de089');
+var element = $('#d6f0b0f9-4c7a-41b2-9f45-8aa865336c0f');
 (function(root) {
   function embed_document(root) {
     
@@ -16118,10 +16855,10 @@ var element = $('#25c52556-920f-46af-8743-2f39d57de089');
 
 
 
-<div id="abc25326-ed05-4857-bd2a-dc1b05f93b5d"></div>
+<div id="22f2107c-7188-49c4-a084-f18f98e7361e"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#abc25326-ed05-4857-bd2a-dc1b05f93b5d');
+var element = $('#22f2107c-7188-49c4-a084-f18f98e7361e');
 (function(root) {
   function embed_document(root) {
     
@@ -16213,10 +16950,10 @@ var element = $('#abc25326-ed05-4857-bd2a-dc1b05f93b5d');
 
 
 
-<div id="b36db2fe-13c4-41c2-86d1-18f75399b699"></div>
+<div id="c44ed3f5-94b2-4f9a-8a75-94e11f959719"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#b36db2fe-13c4-41c2-86d1-18f75399b699');
+var element = $('#c44ed3f5-94b2-4f9a-8a75-94e11f959719');
 (function(root) {
   function embed_document(root) {
     
@@ -16308,10 +17045,10 @@ var element = $('#b36db2fe-13c4-41c2-86d1-18f75399b699');
 
 
 
-<div id="d39da5e6-1473-4c09-a89a-92bac443426f"></div>
+<div id="b4a7d113-c2d1-40dc-896f-210bc7c34a94"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#d39da5e6-1473-4c09-a89a-92bac443426f');
+var element = $('#b4a7d113-c2d1-40dc-896f-210bc7c34a94');
 (function(root) {
   function embed_document(root) {
     
