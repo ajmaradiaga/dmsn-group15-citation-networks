@@ -43,63 +43,6 @@ ABSTRACTS_FOLDER_PATH = f"{DATASETS_FOLDER}/{ABSTRACTS_FOLDER}/"
 # In[12]:
 
 
-def extract_text_from_abstract(text):
-    info = {}
-    fields = ['Date:', "From:", "Title:", "Authors:", "Comments:", "Subj-class:", "Journal-ref:"]
-    
-    for field in fields:
-        match = re.search(f"[\n\r].*{field}\s*([^\n\r]*)", text, re.I)
-        value = None
-        if match is not None:
-            value = match.group(1)
-            
-            if field == 'Date:':
-                aux = value
-                
-                val = date_from_str(aux)
-                
-                value = val
-                
-                if val is None:
-                    print(aux, value)
-                
-        
-        info[field.replace(':', '').lower()] = value
-        
-    return info
-
-ignore_emails = ['g@c']
-ignore_tlds = ['g@c', '']
-ignore_domains = ['c', '']
-
-def domain_and_tld_from_email(email):
-    domain = None
-    tld = None
-    email = email.lower()
-    if '.' in email:
-                        
-        # Remove cases when email finishes with a period
-        if email[-1] == '.':
-            email = email[:-1]
-
-        domain = email.split('@')[1].lower().strip()
-
-        if '.ac.' in domain or '.co.' in domain or '.edu.' in domain or '.gov.' in domain or '.com.' in domain:
-            domain = ".".join(domain.split('.')[-3:])
-        else:
-            domain = ".".join(domain.split('.')[-2:])
-
-        tld  = email.split('.')[-1].lower().strip()
-
-        if tld in ignore_tlds:
-            tld = None
-
-        if domain in ignore_domains:
-            domain = None
-        
-    
-    return domain, tld
-
 TIME_REPLACEMENT_REGEX = [
     ' [\d]+:\d\d[:\d\d[.\d\d]*]*',
     '\(\d*kb\)',
@@ -129,8 +72,8 @@ DATE_FORMATS = [
     '%d-%b-%Y'
 ]
 
-# Process the date that it is in the paper abstract
 def date_from_str(s, print_log=False):
+    """Process the date that it is in the paper abstract"""
     replaced = s
     log = []
     # print(s, '\n===============')
@@ -138,8 +81,6 @@ def date_from_str(s, print_log=False):
         replaced = re.sub(rex, ' ', replaced)
         log.append(rex + ' -> ' + replaced)
     
-    #aux = re.sub('\s["MWCNETDSTBGIKPGJZ()\s]+', '', replaced).strip()
-    #print(aux)
     aux = re.sub(' ["A-Za-z ()]+$', '', replaced.strip())
     aux = re.sub('MET|EDT|CDT|NV|GMT', '', aux.strip())
     
@@ -167,6 +108,68 @@ def date_from_str(s, print_log=False):
                 print(l)
     
     return val
+
+
+def extract_text_from_abstract(text):
+    """Process the contents of paper abstracts"""
+    info = {}
+    fields = ['Date:', "From:", "Title:", "Authors:", "Comments:", "Subj-class:", "Journal-ref:"]
+    
+    for field in fields:
+        match = re.search(f"[\n\r].*{field}\s*([^\n\r]*)", text, re.I)
+        value = None
+        if match is not None:
+            value = match.group(1)
+            
+            if field == 'Date:':
+                aux = value
+                
+                val = date_from_str(aux)
+                
+                value = val
+                
+                if val is None:
+                    print(aux, value)
+                
+        
+        info[field.replace(':', '').lower()] = value
+        
+    return info
+
+
+ignore_emails = ['g@c']
+ignore_tlds = ['g@c', '']
+ignore_domains = ['c', '']
+
+def domain_and_tld_from_email(email):
+    """Process domain and tld from email addresses"""
+    domain = None
+    tld = None
+    email = email.lower()
+    if '.' in email:
+                        
+        # Remove cases when email finishes with a period
+        if email[-1] == '.':
+            email = email[:-1]
+
+        domain = email.split('@')[1].lower().strip()
+
+        if '.ac.' in domain or '.co.' in domain or '.edu.' in domain or '.gov.' in domain or '.com.' in domain:
+            domain = ".".join(domain.split('.')[-3:])
+        else:
+            domain = ".".join(domain.split('.')[-2:])
+
+        tld  = email.split('.')[-1].lower().strip()
+
+        if tld in ignore_tlds:
+            tld = None
+
+        if domain in ignore_domains:
+            domain = None
+    
+    return domain, tld
+
+
 
 # Code below from https://stackoverflow.com/a/40449726/9527459
 def explode(df, lst_cols, fill_value=''):
@@ -313,14 +316,10 @@ for dir_name in os.listdir(f"{ABSTRACTS_FOLDER_PATH}"):
                 
                 abstracts_info[key] = {
                     "emails": list(set(emails)),
-#                     "tlds": list(set(tlds)),
-#                     "domains": list(set(domains)),
                     "description": paper_description
                 }
                 
                 abstracts_info[key].update(extract_text_from_abstract(abstract))
-                
-                
                 
     except ValueError:
         pass 

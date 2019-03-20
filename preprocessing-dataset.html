@@ -13167,10 +13167,10 @@ div#notebook {
 
 
 
-<div id="08b2a3a8-277b-49e4-8b48-252959e00ab3"></div>
+<div id="ef09d6f7-09a6-4b89-af49-2e25ce63661a"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
+var element = $('#ef09d6f7-09a6-4b89-af49-2e25ce63661a');
 
 (function(root) {
   function now() {
@@ -13523,64 +13523,7 @@ var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">extract_text_from_abstract</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Date:&#39;</span><span class="p">,</span> <span class="s2">&quot;From:&quot;</span><span class="p">,</span> <span class="s2">&quot;Title:&quot;</span><span class="p">,</span> <span class="s2">&quot;Authors:&quot;</span><span class="p">,</span> <span class="s2">&quot;Comments:&quot;</span><span class="p">,</span> <span class="s2">&quot;Subj-class:&quot;</span><span class="p">,</span> <span class="s2">&quot;Journal-ref:&quot;</span><span class="p">]</span>
-    
-    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;[</span><span class="se">\n\r</span><span class="s2">].*</span><span class="si">{field}</span><span class="s2">\s*([^</span><span class="se">\n\r</span><span class="s2">]*)&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;Date:&#39;</span><span class="p">:</span>
-                <span class="n">aux</span> <span class="o">=</span> <span class="n">value</span>
-                
-                <span class="n">val</span> <span class="o">=</span> <span class="n">date_from_str</span><span class="p">(</span><span class="n">aux</span><span class="p">)</span>
-                
-                <span class="n">value</span> <span class="o">=</span> <span class="n">val</span>
-                
-                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-                
-        
-        <span class="n">info</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
-        
-    <span class="k">return</span> <span class="n">info</span>
-
-<span class="n">ignore_emails</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">]</span>
-<span class="n">ignore_tlds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-<span class="n">ignore_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
-
-<span class="k">def</span> <span class="nf">domain_and_tld_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
-    <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">email</span><span class="p">:</span>
-                        
-        <span class="c1"># Remove cases when email finishes with a period</span>
-        <span class="k">if</span> <span class="n">email</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
-            <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="n">domain</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="s1">&#39;.ac.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.co.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.edu.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.gov.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.com.&#39;</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
-
-        <span class="n">tld</span>  <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-
-        <span class="k">if</span> <span class="n">tld</span> <span class="ow">in</span> <span class="n">ignore_tlds</span><span class="p">:</span>
-            <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">ignore_domains</span><span class="p">:</span>
-            <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
-        
-    
-    <span class="k">return</span> <span class="n">domain</span><span class="p">,</span> <span class="n">tld</span>
-
-<span class="n">TIME_REPLACEMENT_REGEX</span> <span class="o">=</span> <span class="p">[</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TIME_REPLACEMENT_REGEX</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39; [\d]+:\d\d[:\d\d[.\d\d]*]*&#39;</span><span class="p">,</span>
     <span class="s1">&#39;\(\d*kb\)&#39;</span><span class="p">,</span>
     <span class="s1">&#39;[\d]+:\d\d:\d\d&#39;</span><span class="p">,</span>
@@ -13609,8 +13552,8 @@ var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
     <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">-%b-%Y&#39;</span>
 <span class="p">]</span>
 
-<span class="c1"># Process the date that it is in the paper abstract</span>
 <span class="k">def</span> <span class="nf">date_from_str</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">print_log</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Process the date that it is in the paper abstract&quot;&quot;&quot;</span>
     <span class="n">replaced</span> <span class="o">=</span> <span class="n">s</span>
     <span class="n">log</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># print(s, &#39;\n===============&#39;)</span>
@@ -13618,8 +13561,6 @@ var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
         <span class="n">replaced</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">rex</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">replaced</span><span class="p">)</span>
         <span class="n">log</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rex</span> <span class="o">+</span> <span class="s1">&#39; -&gt; &#39;</span> <span class="o">+</span> <span class="n">replaced</span><span class="p">)</span>
     
-    <span class="c1">#aux = re.sub(&#39;\s[&quot;MWCNETDSTBGIKPGJZ()\s]+&#39;, &#39;&#39;, replaced).strip()</span>
-    <span class="c1">#print(aux)</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39; [&quot;A-Za-z ()]+$&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">replaced</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
     <span class="n">aux</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;MET|EDT|CDT|NV|GMT&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">aux</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
     
@@ -13647,6 +13588,68 @@ var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
                 <span class="nb">print</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">val</span>
+
+
+<span class="k">def</span> <span class="nf">extract_text_from_abstract</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Process the contents of paper abstracts&quot;&quot;&quot;</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Date:&#39;</span><span class="p">,</span> <span class="s2">&quot;From:&quot;</span><span class="p">,</span> <span class="s2">&quot;Title:&quot;</span><span class="p">,</span> <span class="s2">&quot;Authors:&quot;</span><span class="p">,</span> <span class="s2">&quot;Comments:&quot;</span><span class="p">,</span> <span class="s2">&quot;Subj-class:&quot;</span><span class="p">,</span> <span class="s2">&quot;Journal-ref:&quot;</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;[</span><span class="se">\n\r</span><span class="s2">].*</span><span class="si">{field}</span><span class="s2">\s*([^</span><span class="se">\n\r</span><span class="s2">]*)&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s1">&#39;Date:&#39;</span><span class="p">:</span>
+                <span class="n">aux</span> <span class="o">=</span> <span class="n">value</span>
+                
+                <span class="n">val</span> <span class="o">=</span> <span class="n">date_from_str</span><span class="p">(</span><span class="n">aux</span><span class="p">)</span>
+                
+                <span class="n">value</span> <span class="o">=</span> <span class="n">val</span>
+                
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">aux</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                
+        
+        <span class="n">info</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">value</span>
+        
+    <span class="k">return</span> <span class="n">info</span>
+
+
+<span class="n">ignore_emails</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">]</span>
+<span class="n">ignore_tlds</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;g@c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+<span class="n">ignore_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">domain_and_tld_from_email</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Process domain and tld from email addresses&quot;&quot;&quot;</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">email</span><span class="p">:</span>
+                        
+        <span class="c1"># Remove cases when email finishes with a period</span>
+        <span class="k">if</span> <span class="n">email</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span><span class="p">:</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">email</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">domain</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s1">&#39;.ac.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.co.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.edu.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.gov.&#39;</span> <span class="ow">in</span> <span class="n">domain</span> <span class="ow">or</span> <span class="s1">&#39;.com.&#39;</span> <span class="ow">in</span> <span class="n">domain</span><span class="p">:</span>
+            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">domain</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">domain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="n">tld</span>  <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">tld</span> <span class="ow">in</span> <span class="n">ignore_tlds</span><span class="p">:</span>
+            <span class="n">tld</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">domain</span> <span class="ow">in</span> <span class="n">ignore_domains</span><span class="p">:</span>
+            <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="n">domain</span><span class="p">,</span> <span class="n">tld</span>
+
+
 
 <span class="c1"># Code below from https://stackoverflow.com/a/40449726/9527459</span>
 <span class="k">def</span> <span class="nf">explode</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">lst_cols</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -14025,14 +14028,10 @@ var element = $('#08b2a3a8-277b-49e4-8b48-252959e00ab3');
                 
                 <span class="n">abstracts_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">&quot;emails&quot;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">emails</span><span class="p">)),</span>
-<span class="c1">#                     &quot;tlds&quot;: list(set(tlds)),</span>
-<span class="c1">#                     &quot;domains&quot;: list(set(domains)),</span>
                     <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">paper_description</span>
                 <span class="p">}</span>
                 
                 <span class="n">abstracts_info</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extract_text_from_abstract</span><span class="p">(</span><span class="n">abstract</span><span class="p">))</span>
-                
-                
                 
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">pass</span> 
@@ -15883,10 +15882,10 @@ Name: last_citation, Length: 27742, dtype: datetime64[ns]</pre>
 
 
 
-<div id="ff569067-6480-49c3-8389-30fdf7532194"></div>
+<div id="c00a29f6-f216-4e92-b774-a928186ddd19"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#ff569067-6480-49c3-8389-30fdf7532194');
+var element = $('#c00a29f6-f216-4e92-b774-a928186ddd19');
 (function(root) {
   function embed_document(root) {
     
@@ -15978,10 +15977,10 @@ var element = $('#ff569067-6480-49c3-8389-30fdf7532194');
 
 
 
-<div id="fbe55559-2b78-43e5-a48a-8c2ebe056998"></div>
+<div id="e3e1f47f-7cd5-41d6-8dec-c97e9e860d35"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#fbe55559-2b78-43e5-a48a-8c2ebe056998');
+var element = $('#e3e1f47f-7cd5-41d6-8dec-c97e9e860d35');
 (function(root) {
   function embed_document(root) {
     
@@ -16065,10 +16064,10 @@ var element = $('#fbe55559-2b78-43e5-a48a-8c2ebe056998');
 
 
 
-<div id="0d29c3dd-bd4b-4b75-b3f5-4c74de923c58"></div>
+<div id="2dffbea1-b615-4a65-84a0-82f8bf3b90a1"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#0d29c3dd-bd4b-4b75-b3f5-4c74de923c58');
+var element = $('#2dffbea1-b615-4a65-84a0-82f8bf3b90a1');
 (function(root) {
   function embed_document(root) {
     
@@ -16160,10 +16159,10 @@ var element = $('#0d29c3dd-bd4b-4b75-b3f5-4c74de923c58');
 
 
 
-<div id="7252c35a-c904-4fd0-b472-1760754c0155"></div>
+<div id="7f3abeb7-eaf8-4c6e-b87d-be8b993ebfc1"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#7252c35a-c904-4fd0-b472-1760754c0155');
+var element = $('#7f3abeb7-eaf8-4c6e-b87d-be8b993ebfc1');
 (function(root) {
   function embed_document(root) {
     
@@ -16245,10 +16244,10 @@ var element = $('#7252c35a-c904-4fd0-b472-1760754c0155');
 
 
 
-<div id="cde54356-1f79-488c-b370-fa8756e01f70"></div>
+<div id="e9739c88-168e-4172-9b9f-318543084869"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#cde54356-1f79-488c-b370-fa8756e01f70');
+var element = $('#e9739c88-168e-4172-9b9f-318543084869');
 (function(root) {
   function embed_document(root) {
     
@@ -16364,10 +16363,10 @@ To retain the current behavior and silence the warning, pass &#39;sort=True&#39;
 
 
 
-<div id="9bc95334-f03b-4887-8d19-56185b6c9dad"></div>
+<div id="e36ba359-96e0-4181-b27f-6d12ecb3eb1f"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#9bc95334-f03b-4887-8d19-56185b6c9dad');
+var element = $('#e36ba359-96e0-4181-b27f-6d12ecb3eb1f');
 (function(root) {
   function embed_document(root) {
     
@@ -16448,10 +16447,10 @@ var element = $('#9bc95334-f03b-4887-8d19-56185b6c9dad');
 
 
 
-<div id="783f2481-2d25-4a28-999d-5174d8da4160"></div>
+<div id="c2b6780f-5c73-40ec-8dbc-cac86e01a33a"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#783f2481-2d25-4a28-999d-5174d8da4160');
+var element = $('#c2b6780f-5c73-40ec-8dbc-cac86e01a33a');
 (function(root) {
   function embed_document(root) {
     
@@ -16740,10 +16739,10 @@ var element = $('#783f2481-2d25-4a28-999d-5174d8da4160');
 
 
 
-<div id="d6f0b0f9-4c7a-41b2-9f45-8aa865336c0f"></div>
+<div id="22ed5d6d-b5e7-4022-a61f-e6df0133c821"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#d6f0b0f9-4c7a-41b2-9f45-8aa865336c0f');
+var element = $('#22ed5d6d-b5e7-4022-a61f-e6df0133c821');
 (function(root) {
   function embed_document(root) {
     
@@ -16855,10 +16854,10 @@ var element = $('#d6f0b0f9-4c7a-41b2-9f45-8aa865336c0f');
 
 
 
-<div id="22f2107c-7188-49c4-a084-f18f98e7361e"></div>
+<div id="a689f05b-f094-4286-ad2d-ebe9a67a70f4"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#22f2107c-7188-49c4-a084-f18f98e7361e');
+var element = $('#a689f05b-f094-4286-ad2d-ebe9a67a70f4');
 (function(root) {
   function embed_document(root) {
     
@@ -16950,10 +16949,10 @@ var element = $('#22f2107c-7188-49c4-a084-f18f98e7361e');
 
 
 
-<div id="c44ed3f5-94b2-4f9a-8a75-94e11f959719"></div>
+<div id="6a559fff-7b14-48b0-9773-a5ebdb709ae2"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#c44ed3f5-94b2-4f9a-8a75-94e11f959719');
+var element = $('#6a559fff-7b14-48b0-9773-a5ebdb709ae2');
 (function(root) {
   function embed_document(root) {
     
@@ -17045,10 +17044,10 @@ var element = $('#c44ed3f5-94b2-4f9a-8a75-94e11f959719');
 
 
 
-<div id="b4a7d113-c2d1-40dc-896f-210bc7c34a94"></div>
+<div id="856ae5d4-d3c8-4225-bbaf-11da1d1645d4"></div>
 <div class="output_subarea output_javascript ">
 <script type="text/javascript">
-var element = $('#b4a7d113-c2d1-40dc-896f-210bc7c34a94');
+var element = $('#856ae5d4-d3c8-4225-bbaf-11da1d1645d4');
 (function(root) {
   function embed_document(root) {
     

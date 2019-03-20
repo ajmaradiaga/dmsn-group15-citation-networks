@@ -79,7 +79,7 @@ def find_geocoder(domain):
 
 # domain_latlong = {}
 
-for k, v in domain_latlong.items(): #df.iterrows():
+for k, v in domain_latlong.items():
     domain = k#row[1][0]
     
     if '.bitnet' not in k and v is None:
