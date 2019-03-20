@@ -14,6 +14,8 @@ import pandas as pd
 
 from helper import display_df_with_bokeh
 
+pd.set_option('display.width', 1000)
+
 
 # In[2]:
 
@@ -25,38 +27,44 @@ DATASETS_FOLDER = "datasets"
 
 
 # Opening original network with modularity
-with open(f"gephi/nodes_with_modularity_degree_centralities.csv", 'r') as f:
+with open(f"gephi/dynamic/nodes_with_all_network_stats_and_timestamps.csv", 'r') as f:
     gephi_df = pd.read_csv(f, header=0)
 
 
 # In[4]:
 
 
-display_df_with_bokeh(gephi_df, include_index=True)
+gephi_df.head(10)
 
 
-# In[18]:
+# In[8]:
 
 
-gephi_df.sort_values(['indegree'], ascending=False)[:10]
+gephi_df[['Id', 'indegree']].sort_values(['indegree'], ascending=False)[:10]
 
 
-# In[19]:
+# In[7]:
 
 
-gephi_df.sort_values(['pageranks'], ascending=False)[:10]
-
-
-# In[17]:
-
-
-gephi_df.sort_values(['closnesscentrality'], ascending=False)[:20]
+gephi_df[['Id', 'pageranks']].sort_values(['pageranks'], ascending=False)[:10]
 
 
 # In[14]:
 
 
-gephi_df.sort_values(['betweenesscentrality'], ascending=False)[:20]
+gephi_df[['Id', 'eigencentrality']].sort_values(['eigencentrality'], ascending=False)[:10]
+
+
+# In[11]:
+
+
+gephi_df[['Id', 'closnesscentrality']].sort_values(['closnesscentrality'], ascending=False)[:10]
+
+
+# In[13]:
+
+
+gephi_df[['Id', 'betweenesscentrality']].sort_values(['betweenesscentrality'], ascending=False)[:10]
 
 
 # In[ ]:
