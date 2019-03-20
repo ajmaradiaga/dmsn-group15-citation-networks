@@ -3,7 +3,7 @@
 
 # This notebook reduces the size of our network for visualisation purposes.
 
-# In[1]:
+# In[12]:
 
 
 import os
@@ -14,14 +14,16 @@ import pandas as pd
 
 from helper import display_df_with_bokeh
 
+pd.set_option('display.width', 400)
 
-# In[2]:
+
+# In[13]:
 
 
 DATASETS_FOLDER = "datasets"
 
 
-# In[3]:
+# In[14]:
 
 
 # Opening original network with modularity
@@ -29,7 +31,21 @@ with open(f"gephi/citations/nodes_with_all_network_stats.csv", 'r') as f:
     gephi_df = pd.read_csv(f, header=0)
 
 
-# In[4]:
+# In[21]:
+
+
+# Calculate members per group
+gephi_df.groupby('modularity_class').count().sort_values('Id', ascending = False).head(10)
+
+
+# In[25]:
+
+
+# Calculate citations per group
+gephi_df.groupby('modularity_class').sum().sort_values('indegree', ascending = False).head(10)
+
+
+# In[17]:
 
 
 # Calculate records per group
@@ -38,16 +54,17 @@ modularity_df = gephi_df.groupby('modularity_class').count().sort_values('Id', a
 # Only taking in consideration where groups have more than 10 nodes
 modularity_mt_nodes_df = modularity_df[modularity_df.Id >= 10]
 
-display_df_with_bokeh(modularity_mt_nodes_df, include_index=True)
+# display_df_with_bokeh(modularity_mt_nodes_df, include_index=True)
+modularity_mt_nodes_df
 
 
-# In[5]:
+# In[18]:
 
 
 print("Total nodes that form part of communities with more than 10 members: ", modularity_mt_nodes_df.sum()['Id'])
 
 
-# In[6]:
+# In[19]:
 
 
 print("Total nodes that form part of communities with less than 10 members: ", modularity_df[modularity_df.Id < 10].sum()['Id'])
