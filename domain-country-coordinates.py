@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[7]:
+# In[1]:
 
 
 import pandas as pd
@@ -137,16 +137,23 @@ domain_latlong_df.head()
 domain_latlong_df.to_csv('datasets/domains_with_countries.csv')
 
 
-# In[93]:
+# In[4]:
 
 
-country_group_df = domain_latlong_df.groupby(['country']).count().sort_values(['country'], ascending = True)
+domain_latlong_df = pd.read_csv('datasets/domains_with_countries.csv')
 
 
-# In[88]:
+# In[13]:
 
 
+country_group_df = domain_latlong_df.groupby(['country']).count().sort_values(['lat'], ascending = False)
 
+
+# In[14]:
+
+
+# Contributions by country
+country_group_df
 
 
 # In[ ]:

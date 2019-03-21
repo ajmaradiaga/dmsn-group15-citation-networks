@@ -13115,7 +13115,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -13624,10 +13624,10 @@ waterloo.edu
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[93]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">country_group_df</span> <span class="o">=</span> <span class="n">domain_latlong_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;country&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;country&#39;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">domain_latlong_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;datasets/domains_with_countries.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13637,10 +13637,24 @@ waterloo.edu
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[88]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">country_group_df</span> <span class="o">=</span> <span class="n">domain_latlong_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;country&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s1">&#39;lat&#39;</span><span class="p">],</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Contributions by country</span>
+<span class="n">country_group_df</span>
 </pre></div>
 
     </div>
@@ -13653,13 +13667,476 @@ waterloo.edu
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[14]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(&#39;&#39;, &#39;AM&#39;)
-</pre>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Unnamed: 0</th>
+      <th>lat</th>
+      <th>lng</th>
+      <th>city</th>
+    </tr>
+    <tr>
+      <th>country</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>US</th>
+      <td>160</td>
+      <td>160</td>
+      <td>160</td>
+      <td>132</td>
+    </tr>
+    <tr>
+      <th>JP</th>
+      <td>78</td>
+      <td>78</td>
+      <td>78</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>RU</th>
+      <td>77</td>
+      <td>77</td>
+      <td>77</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>DE</th>
+      <td>67</td>
+      <td>67</td>
+      <td>67</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>GB</th>
+      <td>50</td>
+      <td>50</td>
+      <td>50</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>BR</th>
+      <td>32</td>
+      <td>32</td>
+      <td>32</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>KR</th>
+      <td>31</td>
+      <td>31</td>
+      <td>31</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>IT</th>
+      <td>30</td>
+      <td>30</td>
+      <td>30</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>CA</th>
+      <td>29</td>
+      <td>29</td>
+      <td>29</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>ES</th>
+      <td>28</td>
+      <td>28</td>
+      <td>28</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>CN</th>
+      <td>28</td>
+      <td>28</td>
+      <td>28</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>FR</th>
+      <td>27</td>
+      <td>27</td>
+      <td>27</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>PL</th>
+      <td>16</td>
+      <td>16</td>
+      <td>16</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>SE</th>
+      <td>15</td>
+      <td>15</td>
+      <td>15</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>AU</th>
+      <td>13</td>
+      <td>13</td>
+      <td>13</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>IR</th>
+      <td>13</td>
+      <td>13</td>
+      <td>13</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>GR</th>
+      <td>11</td>
+      <td>11</td>
+      <td>11</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>IN</th>
+      <td>11</td>
+      <td>11</td>
+      <td>11</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>TR</th>
+      <td>11</td>
+      <td>11</td>
+      <td>11</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>CH</th>
+      <td>10</td>
+      <td>10</td>
+      <td>10</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>NL</th>
+      <td>10</td>
+      <td>10</td>
+      <td>10</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>TW</th>
+      <td>10</td>
+      <td>10</td>
+      <td>10</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>MX</th>
+      <td>9</td>
+      <td>9</td>
+      <td>9</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>CZ</th>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>DK</th>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>IL</th>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>BE</th>
+      <td>8</td>
+      <td>8</td>
+      <td>8</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>HU</th>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AR</th>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>IE</th>
+      <td>7</td>
+      <td>7</td>
+      <td>7</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>CO</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>FI</th>
+      <td>4</td>
+      <td>4</td>
+      <td>4</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AM</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>SG</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>CU</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>SK</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>KG</th>
+      <td>3</td>
+      <td>3</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>GE</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>MA</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>NZ</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>PH</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>EE</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>DZ</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>RS</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>HR</th>
+      <td>2</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>UZ</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AS</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>AZ</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>VN</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>BY</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>UY</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>IS</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>SI</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>CR</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>JO</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>EG</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>MY</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>KZ</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>ID</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>CY</th>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>70 rows × 4 columns</p>
 </div>
+</div>
+
 </div>
 
 </div>
@@ -13832,10 +14309,10 @@ waterloo.edu
 
  
  
-<div id="74ab3ff5-ae1c-4013-aef9-49968f6bd4da"></div>
+<div id="d72970ff-8b75-4c47-ba7d-e6dca76afe74"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#74ab3ff5-ae1c-4013-aef9-49968f6bd4da');
+var element = $('#d72970ff-8b75-4c47-ba7d-e6dca76afe74');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
 {"model_id": "1d4711f48f714aaf97dbcb8a8d2aa9a7", "version_major": 2, "version_minor": 0}
