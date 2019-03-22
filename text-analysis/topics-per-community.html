@@ -13383,14 +13383,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;../</span><span class="si">{DATASETS_FOLDER}</span><span class="s2">/nodes_with_all_network_stats_and_timestamps.csv&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">nodes_with_stats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-<span class="n">nodes_communities</span> <span class="o">=</span> <span class="n">nodes_with_stats</span><span class="p">[[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_class&#39;</span><span class="p">]]</span>
-<span class="n">nodes_communities</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;community&#39;</span><span class="p">]</span>
+<span class="n">nodes_communities</span> <span class="o">=</span> <span class="n">nodes_with_stats</span><span class="p">[[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;modularity_class&#39;</span><span class="p">,</span> <span class="s1">&#39;indegree&#39;</span><span class="p">]]</span>
+<span class="n">nodes_communities</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Id&#39;</span><span class="p">,</span> <span class="s1">&#39;community&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">]</span>
     
 <span class="n">df_with_communities</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">nodes_communities</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s2">&quot;outer&quot;</span><span class="p">,</span> <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;Id&#39;</span><span class="p">)</span>
 <span class="n">df_with_communities</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -13406,7 +13406,7 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[23]:</div>
+    <div class="prompt output_prompt">Out[28]:</div>
 
 
 
@@ -13443,6 +13443,7 @@ div#notebook {
       <th>text</th>
       <th>Id</th>
       <th>community</th>
+      <th>citations</th>
     </tr>
   </thead>
   <tbody>
@@ -13462,6 +13463,7 @@ div#notebook {
       <td>Compactification, Geometry and Duality: N=2 These are notes based on lectures given at TASI99. We review the geometry of the moduli space of N=2 theories in four dimensions from the point of view ...</td>
       <td>1001.0</td>
       <td>42.0</td>
+      <td>10.0</td>
     </tr>
     <tr>
       <th>1</th>
@@ -13479,6 +13481,7 @@ div#notebook {
       <td>Domain Walls and Massive Gauged Supergravity Potentials We point out that massive gauged supergravity potentials, for example those arising due to the massive breathing mode of sphere reductions i...</td>
       <td>1002.0</td>
       <td>29.0</td>
+      <td>43.0</td>
     </tr>
     <tr>
       <th>2</th>
@@ -13496,6 +13499,7 @@ div#notebook {
       <td>Comment on "Metric Fluctuations in Brane Worlds" Recently, Ivanov and Volovich (hep-th/9912242) claimed that the perturbation of $h_{\mu\nu}$ with nonvanishing transverse components $h_{5\mu}$ is ...</td>
       <td>1003.0</td>
       <td>29.0</td>
+      <td>15.0</td>
     </tr>
     <tr>
       <th>3</th>
@@ -13513,6 +13517,7 @@ div#notebook {
       <td>Moving Mirrors and Thermodynamic Paradoxes Quantum fields responding to "moving mirrors" have been predicted to give rise to thermodynamic paradoxes. I show that the assumption in such work that t...</td>
       <td>1004.0</td>
       <td>2.0</td>
+      <td>1.0</td>
     </tr>
     <tr>
       <th>4</th>
@@ -13530,6 +13535,271 @@ div#notebook {
       <td>Bundles of chiral blocks and boundary conditions in CFT Various aspects of spaces of chiral blocks are discussed. In particular, conjectures about the dimensions of irreducible sub-bundles are rev...</td>
       <td>1005.0</td>
       <td>0.0</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_with_communities</span><span class="p">[</span><span class="n">df_with_communities</span><span class="o">.</span><span class="n">community</span> <span class="o">==</span> <span class="mi">29</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;citations&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)[[</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[44]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>paper</th>
+      <th>title</th>
+      <th>citations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>23731</th>
+      <td>9711200</td>
+      <td>The Large N Limit of Superconformal Field Theories and Supergravity</td>
+      <td>2414.0</td>
+    </tr>
+    <tr>
+      <th>24348</th>
+      <td>9802150</td>
+      <td>Anti De Sitter Space And Holography</td>
+      <td>1775.0</td>
+    </tr>
+    <tr>
+      <th>24307</th>
+      <td>9802109</td>
+      <td>Gauge Theory Correlators from Non-Critical String Theory</td>
+      <td>1641.0</td>
+    </tr>
+    <tr>
+      <th>27900</th>
+      <td>9906064</td>
+      <td>An Alternative to Compactification</td>
+      <td>1031.0</td>
+    </tr>
+    <tr>
+      <th>27717</th>
+      <td>9905111</td>
+      <td>Large N Field Theories, String Theory and Gravity</td>
+      <td>806.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_with_communities</span><span class="p">[</span><span class="n">df_with_communities</span><span class="o">.</span><span class="n">community</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;citations&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)[[</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[45]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>paper</th>
+      <th>title</th>
+      <th>citations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>20625</th>
+      <td>9610043</td>
+      <td>M Theory As A Matrix Model: A Conjecture</td>
+      <td>1199.0</td>
+    </tr>
+    <tr>
+      <th>28447</th>
+      <td>9908142</td>
+      <td>String Theory and Noncommutative Geometry</td>
+      <td>1142.0</td>
+    </tr>
+    <tr>
+      <th>23693</th>
+      <td>9711162</td>
+      <td>Noncommutative Geometry and Matrix Theory: Compactification on Tori</td>
+      <td>788.0</td>
+    </tr>
+    <tr>
+      <th>18158</th>
+      <td>9510135</td>
+      <td>Bound States Of Strings And $p$-Branes</td>
+      <td>775.0</td>
+    </tr>
+    <tr>
+      <th>23696</th>
+      <td>9711165</td>
+      <td>D-branes and the Noncommutative Torus</td>
+      <td>456.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_with_communities</span><span class="p">[</span><span class="n">df_with_communities</span><span class="o">.</span><span class="n">community</span> <span class="o">==</span> <span class="mi">42</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;citations&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)[[</span><span class="s1">&#39;paper&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;citations&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[46]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>paper</th>
+      <th>title</th>
+      <th>citations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>15223</th>
+      <td>9407087</td>
+      <td>Monopole Condensation, And Confinement In N=2 Supersymmetric Yang-Mills</td>
+      <td>1299.0</td>
+    </tr>
+    <tr>
+      <th>15428</th>
+      <td>9408099</td>
+      <td>Monopoles, Duality and Chiral Symmetry Breaking in N=2 Supersymmetric</td>
+      <td>1006.0</td>
+    </tr>
+    <tr>
+      <th>19237</th>
+      <td>9603167</td>
+      <td>D-branes, Quivers, and ALE Instantons</td>
+      <td>467.0</td>
+    </tr>
+    <tr>
+      <th>21059</th>
+      <td>9611230</td>
+      <td>Type IIB Superstrings, BPS Monopoles, And Three-Dimensional Gauge</td>
+      <td>438.0</td>
+    </tr>
+    <tr>
+      <th>21881</th>
+      <td>9703166</td>
+      <td>Solutions Of Four-Dimensional Field Theories Via M Theory</td>
+      <td>424.0</td>
     </tr>
   </tbody>
 </table>

@@ -86,17 +86,35 @@ df['last_citation'] = df['last_citation'].astype('datetime64[ns]')
 df.head()
 
 
-# In[23]:
+# In[28]:
 
 
 with open(f"../{DATASETS_FOLDER}/nodes_with_all_network_stats_and_timestamps.csv", 'r') as f:
     nodes_with_stats = pd.read_csv(f)
 
-nodes_communities = nodes_with_stats[['Id', 'modularity_class']]
-nodes_communities.columns = ['Id', 'community']
+nodes_communities = nodes_with_stats[['Id', 'modularity_class', 'indegree']]
+nodes_communities.columns = ['Id', 'community', 'citations']
     
 df_with_communities = df.merge(nodes_communities, how="outer", left_on = 'paper', right_on = 'Id')
 df_with_communities.head()
+
+
+# In[44]:
+
+
+df_with_communities[df_with_communities.community == 29].sort_values('citations', ascending=False)[['paper', 'title', 'citations']].head()
+
+
+# In[45]:
+
+
+df_with_communities[df_with_communities.community == 1].sort_values('citations', ascending=False)[['paper', 'title', 'citations']].head()
+
+
+# In[46]:
+
+
+df_with_communities[df_with_communities.community == 42].sort_values('citations', ascending=False)[['paper', 'title', 'citations']].head()
 
 
 # In[19]:
