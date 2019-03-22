@@ -38,11 +38,11 @@ with open(f"gephi/dynamic/nodes_with_all_network_stats_and_timestamps.csv", 'r')
 gephi_df.groupby('componentnumber').count().sort_values('Id', ascending = False).head(10)
 
 
-# In[5]:
+# In[16]:
 
 
 # Calculate members per group
-gephi_df.groupby('modularity_class').count().sort_values('Id', ascending = False).head(10)
+gephi_df.groupby('modularity_class').count().sort_values('Id', ascending = False).head(100)
 
 
 # In[21]:
